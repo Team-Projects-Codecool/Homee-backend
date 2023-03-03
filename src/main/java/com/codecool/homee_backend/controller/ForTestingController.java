@@ -58,13 +58,12 @@ public class ForTestingController {
 //
 //        Space space = spaceRepository.findSpaceById(1L);
 //
-//        device.setSpace(space);
 //        device2.setSpace(space);
 //
-//        deviceRepository.save(device);
+//        deviceRepository.save(device2);
 
-        Space space = spaceRepository.findSpaceById(1L);
-        log.info(space.toString());
+        Space space2 = spaceRepository.findSpaceById(1L);
+        log.info(space2.toString());
 
         return "index";
     }
