@@ -31,7 +31,7 @@ public class Device {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "homee_user_id", referencedColumnName = "id")
-    private HomeeUser homeeUser;
+    @JoinColumn(name = "space_id", referencedColumnName = "id")
+    private Space space;
     private String about;
 }
