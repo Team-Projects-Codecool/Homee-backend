@@ -3,6 +3,7 @@ package com.codecool.homee_backend.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString(exclude = "space")
 public class Device {
 
     @Id
@@ -30,8 +32,8 @@ public class Device {
     private Double purchasePrice;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "space_id", referencedColumnName = "id")
+    @ManyToOne
+    @JoinColumn(name = "space_id", insertable = false, updatable = false)
     private Space space;
     private String about;
 }

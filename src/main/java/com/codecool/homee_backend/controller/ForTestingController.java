@@ -1,5 +1,6 @@
 package com.codecool.homee_backend.controller;
 
+import com.codecool.homee_backend.entity.Space;
 import com.codecool.homee_backend.repository.DeviceRepository;
 import com.codecool.homee_backend.repository.HomeeUserRepository;
 import com.codecool.homee_backend.repository.SpaceRepository;
@@ -34,17 +35,36 @@ public class ForTestingController {
 //
 //        space.getHomeeUsers().add(homeeUser);
 //        spaceRepository.save(space);
-
-
+//
+//
 //        HomeeUser homeeUser = homeeUserRepository.findHomeeUserById(1L);
 //        log.info(homeeUser.toString());
 //        Space space = spaceRepository.findSpaceById(1L);
 //        log.info(space.toString());
-
+//
 //        homeeUser.addSpace(space);
 //        homeeUserRepository.save(homeeUser);
+//
+//        log.info(spaceRepository.findByHomeeUserId(1L).toString());
 
-        log.info(spaceRepository.findByHomeeUserId(1L).toString());
+//        Device device = new Device();
+//        device.setName("test");
+//        device.setModel("test");
+//
+//
+//        Device device2 = new Device();
+//        device2.setName("test");
+//        device2.setModel("test");
+//
+//        Space space = spaceRepository.findSpaceById(1L);
+//
+//        device.setSpace(space);
+//        device2.setSpace(space);
+//
+//        deviceRepository.save(device);
+
+        Space space = spaceRepository.findSpaceById(1L);
+        log.info(space.toString());
 
         return "index";
     }
