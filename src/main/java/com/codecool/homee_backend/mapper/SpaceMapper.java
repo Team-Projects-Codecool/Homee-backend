@@ -8,12 +8,20 @@ import org.springframework.stereotype.Component;
 @Component
 public class SpaceMapper {
 
+    private final DeviceMapper deviceMapper;
+
+    public SpaceMapper(DeviceMapper deviceMapper) {
+        this.deviceMapper = deviceMapper;
+    }
+
     public SpaceDto mapSpaceEntityToDto(Space entity) {
         return new SpaceDto(
                 entity.getId(),
                 entity.getName(),
                 entity.getAbout(),
-                entity.getDevices()
+                entity.getDevices().stream()
+                        .map(deviceMapper::mapDeviceEntityToDto)
+                        .toList()
         );
     }
 

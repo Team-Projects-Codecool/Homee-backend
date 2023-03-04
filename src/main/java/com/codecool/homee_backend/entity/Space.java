@@ -32,4 +32,8 @@ public class Space {
     public void addHomeeUser(HomeeUser homeeUser) {
         homeeUsers.add(homeeUser);
     }
+
+    public void addDevice(Device device) {
+        devices.add(device);
+    }
 }

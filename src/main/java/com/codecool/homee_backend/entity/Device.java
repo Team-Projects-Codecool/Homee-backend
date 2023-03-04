@@ -34,4 +34,18 @@ public class Device {
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Space space;
     private String about;
+
+    public Device(String name, String model, DeviceType deviceType, String spot, LocalDateTime warrantyStart, LocalDateTime warrantyEnd, LocalDateTime purchaseDate, Double purchasePrice, LocalDateTime createdAt, LocalDateTime updatedAt, String about) {
+        this.name = name;
+        this.model = model;
+        this.deviceType = deviceType;
+        this.spot = spot;
+        this.warrantyStart = warrantyStart;
+        this.warrantyEnd = warrantyEnd;
+        this.purchaseDate = purchaseDate;
+        this.purchasePrice = purchasePrice;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.about = about;
+    }
 }
