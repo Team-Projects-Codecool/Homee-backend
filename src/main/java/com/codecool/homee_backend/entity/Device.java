@@ -8,6 +8,7 @@ import lombok.ToString;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Data
@@ -17,8 +18,7 @@ import java.time.LocalDateTime;
 public class Device {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private UUID id  = UUID.randomUUID();
     @NotBlank(message = "Cannot be empty.")
     private String name;
     @NotBlank(message = "Cannot be empty.")

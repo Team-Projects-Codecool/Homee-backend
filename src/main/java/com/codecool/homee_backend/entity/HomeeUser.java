@@ -1,29 +1,26 @@
 package com.codecool.homee_backend.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @ToString(exclude = "spaces")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class HomeeUser {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
+    @EqualsAndHashCode.Include
+    private UUID id  = UUID.randomUUID();
     @NotBlank(message = "Cannot be empty.")
     private String username;
     @NotBlank(message = "Cannot be empty.")
@@ -47,18 +44,5 @@ public class HomeeUser {
     public void addSpace(Space space) {
         spaces.add(space);
         space.getHomeeUsers().add(this);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, username, email, password, registeredTime, lastLoggedIn, firstName, lastName, about);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof HomeeUser)) return false;
-        HomeeUser that = (HomeeUser) o;
-        return Objects.equals(id, that.id) && Objects.equals(username, that.username) && Objects.equals(email, that.email) && Objects.equals(password, that.password) && Objects.equals(registeredTime, that.registeredTime) && Objects.equals(lastLoggedIn, that.lastLoggedIn) && Objects.equals(firstName, that.firstName) && Objects.equals(lastName, that.lastName) && Objects.equals(about, that.about);
     }
 }
