@@ -1,5 +1,6 @@
 package com.codecool.homee_backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import javax.persistence.*;
@@ -28,7 +29,9 @@ public class HomeeUser {
     @NotBlank(message = "Cannot be empty.")
     @Size(min = 5, max = 30, message = "Password must be between 5 and 30 characters.")
     private String password;
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm")
     private LocalDateTime registeredTime;
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm")
     private LocalDateTime lastLoggedIn;
     private String firstName;
     private String lastName;
@@ -41,8 +44,18 @@ public class HomeeUser {
     )
     private Set<Space> spaces = new HashSet<>();
 
+    public HomeeUser(String username, String email, String password, LocalDateTime registeredTime, LocalDateTime lastLoggedIn, String firstName, String lastName, String about) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.registeredTime = registeredTime;
+        this.lastLoggedIn = lastLoggedIn;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.about = about;
+    }
+
     public void addSpace(Space space) {
         spaces.add(space);
-        space.getHomeeUsers().add(this);
     }
 }

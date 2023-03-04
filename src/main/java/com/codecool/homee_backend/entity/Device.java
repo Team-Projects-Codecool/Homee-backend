@@ -1,5 +1,6 @@
 package com.codecool.homee_backend.entity;
 
+import com.codecool.homee_backend.entity.type.DeviceType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
