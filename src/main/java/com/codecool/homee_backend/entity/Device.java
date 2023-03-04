@@ -32,8 +32,7 @@ public class Device {
     private Double purchasePrice;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "space_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Space space;
     private String about;
 }
