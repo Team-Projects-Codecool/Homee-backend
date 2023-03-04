@@ -1,10 +1,7 @@
 package com.codecool.homee_backend.entity;
 
 import com.codecool.homee_backend.entity.type.DeviceType;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -16,9 +13,10 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString(exclude = "space")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Device {
-
     @Id
+    @EqualsAndHashCode.Include
     private UUID id  = UUID.randomUUID();
     @NotBlank(message = "Cannot be empty.")
     private String name;

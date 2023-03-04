@@ -15,7 +15,6 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@ToString(exclude = "spaces")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class HomeeUser {
 

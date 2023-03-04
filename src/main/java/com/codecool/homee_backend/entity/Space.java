@@ -6,10 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @AllArgsConstructor
@@ -25,5 +22,14 @@ public class Space {
     private Set<HomeeUser> homeeUsers = new HashSet<>();
     private String about;
     @OneToMany(mappedBy = "space", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-    private List<Device> devices;
+    private List<Device> devices = new ArrayList<>();
+
+    public Space(String name, String about) {
+        this.name = name;
+        this.about = about;
+    }
+
+    public void addHomeeUser(HomeeUser homeeUser) {
+        homeeUsers.add(homeeUser);
+    }
 }
