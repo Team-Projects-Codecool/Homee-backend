@@ -15,6 +15,11 @@ public interface SpaceRepository extends JpaRepository<Space, UUID> {
     @Query("SELECT DISTINCT s FROM Space s LEFT JOIN FETCH s.devices")
     List<Space> findAllBy();
 
-//    @Query("SELECT s FROM Space s JOIN s.homeeUsers u WHERE u.id = :homeeUserId")
-//    List<Space> findByHomeeUserId(@Param("homeeUserId") UUID homeeUserId);
+//    @Query("SELECT DISTINCT s FROM Space s LEFT JOIN FETCH s.devices WHERE group_id = :id")
+//    List<Space> findAllByGroupId(UUID id);
+
+    @Query("SELECT DISTINCT s FROM Space s JOIN FETCH s.homeeUsers u LEFT JOIN FETCH s.devices WHERE u.id = :homeeUserId")
+    List<Space> findByHomeeUserId(UUID homeeUserId);
+
+
 }

@@ -17,12 +17,16 @@ public class Space {
     @Id
     @EqualsAndHashCode.Include
     private UUID id  = UUID.randomUUID();
+    @Version
+    private Integer version;
     private String name;
-    @ManyToMany(mappedBy = "spaces", fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "spaces")
     private Set<HomeeUser> homeeUsers = new HashSet<>();
     private String about;
     @OneToMany(mappedBy = "space", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     private List<Device> devices = new ArrayList<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    private SpaceGroup spaceGroup;
 
     public Space(String name, String about) {
         this.name = name;

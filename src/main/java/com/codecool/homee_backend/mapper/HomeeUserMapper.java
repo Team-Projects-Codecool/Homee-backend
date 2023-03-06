@@ -28,7 +28,8 @@ public class HomeeUserMapper {
                 entity.getAbout(),
                 entity.getSpaces().stream()
                         .map(spaceMapper::mapSpaceEntityToDto)
-                        .toList()
+                        .toList(),
+                entity.getUserRole()
         );
     }
 
