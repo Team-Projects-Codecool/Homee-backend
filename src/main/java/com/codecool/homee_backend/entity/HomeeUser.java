@@ -1,15 +1,17 @@
 package com.codecool.homee_backend.entity;
 
+import com.codecool.homee_backend.entity.type.UserRole;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @AllArgsConstructor
@@ -19,11 +21,14 @@ import java.util.UUID;
 public class HomeeUser {
 
     @Id
-    @EqualsAndHashCode.Include
     private UUID id  = UUID.randomUUID();
+    @Version
+    private Integer version;
     @NotBlank(message = "Cannot be empty.")
     private String username;
     @NotBlank(message = "Cannot be empty.")
+    @EqualsAndHashCode.Include
+    @Column(unique = true)
     private String email;
     @NotBlank(message = "Cannot be empty.")
     @Size(min = 5, max = 30, message = "Password must be between 5 and 30 characters.")
@@ -35,15 +40,21 @@ public class HomeeUser {
     private String firstName;
     private String lastName;
     private String about;
-    @ManyToMany(fetch = FetchType.LAZY)
+    @Enumerated(EnumType.STRING)
+    private UserRole userRole = UserRole.USER;
+    @OneToMany(mappedBy = "homeeUser", cascade = {CascadeType.PERSIST, CascadeType.MERGE })
+    private List<SpaceGroup> spaceGroups = new ArrayList<>();
+    @ManyToMany
     @JoinTable(
-            name = "homeeuser_space",
-            joinColumns = @JoinColumn(name = "homeeuser_id"),
+            name = "homee_user_space",
+            joinColumns = @JoinColumn(name = "homee_user_id"),
             inverseJoinColumns = @JoinColumn(name = "space_id")
     )
     private Set<Space> spaces = new HashSet<>();
 
-    public HomeeUser(String username, String email, String password, LocalDateTime registeredTime, LocalDateTime lastLoggedIn, String firstName, String lastName, String about) {
+    public HomeeUser(String username, String email, String password, LocalDateTime registeredTime,
+                     LocalDateTime lastLoggedIn, String firstName, String lastName,
+                     String about) {
         this.username = username;
         this.email = email;
         this.password = password;
@@ -56,5 +67,9 @@ public class HomeeUser {
 
     public void addSpace(Space space) {
         spaces.add(space);
+    }
+
+    public void addGroup(SpaceGroup spaceGroup) {
+        spaceGroups.add(spaceGroup);
     }
 }

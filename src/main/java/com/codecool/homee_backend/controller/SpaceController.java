@@ -25,6 +25,11 @@ public class SpaceController {
     @GetMapping("/{id}")
     public SpaceDto getSpace(@PathVariable UUID id) { return spaceService.getSpace(id); }
 
+    @GetMapping("/users/{id}")
+    public List<SpaceDto> getSpacesForUserId(@PathVariable UUID id) {
+        return spaceService.getAllSpacesForHomeeUserId(id);
+    }
+
     @PostMapping
     public SpaceDto addNewSpace(@RequestBody NewSpaceDto newSpace) {
         return spaceService.addNewSpace(newSpace);

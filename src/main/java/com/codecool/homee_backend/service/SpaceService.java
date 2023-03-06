@@ -31,6 +31,12 @@ public class SpaceService {
                 .toList();
     }
 
+    public List<SpaceDto> getAllSpacesForHomeeUserId(UUID id) {
+        return spaceRepository.findByHomeeUserId(id).stream()
+                .map(spaceMapper::mapSpaceEntityToDto)
+                .toList();
+    }
+
     public SpaceDto getSpace(UUID id) {
         return spaceRepository.findById(id)
                 .map(spaceMapper::mapSpaceEntityToDto)
