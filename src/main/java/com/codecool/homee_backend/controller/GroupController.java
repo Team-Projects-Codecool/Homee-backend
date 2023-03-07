@@ -17,9 +17,9 @@ public class GroupController {
         this.spaceGroupService = spaceGroupService;
     }
 
-    @GetMapping("/users/{id}")
-    public List<SpaceGroupDto> getSpaceGroupsForHomeeUser(@PathVariable UUID id) {
-        return spaceGroupService.getGroupsByHomeeUserId(id);
+    @GetMapping(params = "userId")
+    public List<SpaceGroupDto> getSpaceGroupsForHomeeUser(@RequestParam UUID userId) {
+        return spaceGroupService.getGroupsByHomeeUserId(userId);
     }
 
     @GetMapping("/{id}")
@@ -32,8 +32,8 @@ public class GroupController {
         return spaceGroupService.addNewSpaceGroup(newSpaceGroup);
     }
 
-    @PutMapping("/{groupId}/users/{userId}")
-    public void assignGroupToUser(@PathVariable UUID groupId, @PathVariable UUID userId) {
+    @PutMapping(params = {"groupId", "userId"})
+    public void assignGroupToUser(@RequestParam UUID groupId, @RequestParam UUID userId) {
         spaceGroupService.assignGroupToUser(groupId, userId);
     }
 }

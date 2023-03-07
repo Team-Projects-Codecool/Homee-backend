@@ -27,4 +27,8 @@ public class SpaceGroup {
         this.name = name;
         this.about = about;
     }
+
+    public void addSpace(Space space) {
+        this.spaces.add(space);
+    }
 }

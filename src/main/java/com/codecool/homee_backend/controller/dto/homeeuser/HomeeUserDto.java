@@ -1,11 +1,9 @@
 package com.codecool.homee_backend.controller.dto.homeeuser;
 
-import com.codecool.homee_backend.controller.dto.space.SpaceDto;
 import com.codecool.homee_backend.entity.type.UserRole;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 
 public record HomeeUserDto(
@@ -20,7 +18,6 @@ public record HomeeUserDto(
         String firstName,
         String lastName,
         String about,
-        List<SpaceDto> spaces,
         UserRole userRole
 ) {
 }

@@ -38,6 +38,12 @@ public class DeviceService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
+    public List<DeviceDto> getDevicesForSpace(UUID id) {
+        return deviceRepository.findDevicesBySpaceId(id).stream()
+                .map(deviceMapper::mapDeviceEntityToDto)
+                .toList();
+    }
+
     public DeviceDto addNewDevice(NewDeviceDto dto) {
         Device device = deviceMapper.mapDeviceDtoToEntity(dto);
         Device deviceDb = deviceRepository.save(device);

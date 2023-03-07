@@ -25,9 +25,14 @@ public class SpaceController {
     @GetMapping("/{id}")
     public SpaceDto getSpace(@PathVariable UUID id) { return spaceService.getSpace(id); }
 
-    @GetMapping("/users/{id}")
-    public List<SpaceDto> getSpacesForUserId(@PathVariable UUID id) {
-        return spaceService.getAllSpacesForHomeeUserId(id);
+    @GetMapping(params = {"userId"})
+    public List<SpaceDto> getSpacesForUserId(@RequestParam UUID userId) {
+        return spaceService.getAllSpacesForHomeeUserId(userId);
+    }
+
+    @GetMapping(params = {"groupId"})
+    public List<SpaceDto> getSpacesForGroupId(@RequestParam UUID groupId) {
+        return spaceService.getAllSpacesForGroup(groupId);
     }
 
     @PostMapping
@@ -35,8 +40,13 @@ public class SpaceController {
         return spaceService.addNewSpace(newSpace);
     }
 
-    @PutMapping("/{spaceId}/users/{userId}")
-    public void assignSpaceToUser(@PathVariable UUID spaceId, @PathVariable UUID userId) {
+    @PutMapping(params = {"spaceId", "userId"})
+    public void assignSpaceToUser(@RequestParam UUID spaceId, @RequestParam UUID userId) {
         spaceService.assignSpaceToUser(spaceId, userId);
+    }
+
+    @PutMapping(params = {"spaceId", "groupId"})
+    public void assignSpaceToGroup(@RequestParam UUID spaceId, @RequestParam UUID groupId) {
+        spaceService.assignSpaceToGroup(spaceId, groupId);
     }
 }
