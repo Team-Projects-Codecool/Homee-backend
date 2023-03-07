@@ -72,4 +72,12 @@ public class HomeeUser {
     public void addGroup(SpaceGroup spaceGroup) {
         spaceGroups.add(spaceGroup);
     }
+
+    public void clearAllUserSpaces() {
+        spaces.clear();
+    }
+
+    public void clearAllUserGroups() {
+        spaceGroups.clear();
+    }
 }

@@ -26,6 +26,9 @@ public class UserController {
     @GetMapping("/{id}")
     public HomeeUserDto getUser(@PathVariable UUID id) { return homeeUserService.getHomeeUser(id); }
 
+    @DeleteMapping("/{id}")
+    public void softDeleteUser(@PathVariable UUID id) { homeeUserService.softDelete(id); }
+
     @PostMapping
     public HomeeUserDto addNewUser(@RequestBody NewHomeeUserDto newHomeeUser) {
         return homeeUserService.addNewHomeeUser(newHomeeUser);
