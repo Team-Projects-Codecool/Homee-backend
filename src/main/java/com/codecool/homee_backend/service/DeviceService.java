@@ -39,7 +39,7 @@ public class DeviceService {
     }
 
     public List<DeviceDto> getDevicesForSpace(UUID id) {
-        return deviceRepository.findDevicesBySpaceId(id).stream()
+        return deviceRepository.findAllBySpaceId(id).stream()
                 .map(deviceMapper::mapDeviceEntityToDto)
                 .toList();
     }

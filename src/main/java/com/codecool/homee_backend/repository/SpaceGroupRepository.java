@@ -11,9 +11,6 @@ import java.util.UUID;
 @Repository
 public interface SpaceGroupRepository extends JpaRepository<SpaceGroup, UUID> {
 
-    List<SpaceGroup> findSpaceGroupsByHomeeUser_Id(UUID id);
-    List<SpaceGroup> findSpaceGroupsByHomeeUser(UUID id);
-
     @Query("SELECT sg FROM SpaceGroup sg WHERE sg.homeeUser.id=:id")
     List<SpaceGroup> findSpaceGroupsByHomeeUserId(UUID id);
 }

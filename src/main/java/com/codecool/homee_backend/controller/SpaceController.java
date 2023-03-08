@@ -49,4 +49,15 @@ public class SpaceController {
     public void assignSpaceToGroup(@RequestParam UUID spaceId, @RequestParam UUID groupId) {
         spaceService.assignSpaceToGroup(spaceId, groupId);
     }
+
+
+    @DeleteMapping(value = "/{spaceId}", params = "cascade")
+    public void deleteSpace(@PathVariable UUID spaceId, @RequestParam Boolean cascade) {
+        if (cascade) {
+            spaceService.deleteSpaceWithDevices(spaceId);
+        } else {
+            spaceService.deleteSpace(spaceId);
+        }
+    }
+
 }
