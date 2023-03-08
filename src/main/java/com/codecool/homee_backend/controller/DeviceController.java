@@ -38,4 +38,9 @@ public class DeviceController {
     public void assignDeviceToSpace(@RequestParam UUID deviceId, @RequestParam UUID spaceId) {
         deviceService.assignDeviceToSpace(deviceId, spaceId);
     }
+
+    @DeleteMapping("/{deviceId}")
+    public void deleteDevice(@PathVariable UUID deviceId) {
+        deviceService.deleteDevice(deviceId);
+    }
 }

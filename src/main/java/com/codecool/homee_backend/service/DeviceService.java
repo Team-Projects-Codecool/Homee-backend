@@ -24,7 +24,7 @@ public class DeviceService {
     public DeviceService(DeviceRepository deviceRepository, SpaceRepository spaceRepository, DeviceMapper deviceMapper) {this.deviceRepository = deviceRepository;
         this.spaceRepository = spaceRepository;
         this.deviceMapper = deviceMapper;
-    };
+    }
 
     public List<DeviceDto> getAllDevices() {
         return deviceRepository.findAll().stream()
@@ -64,4 +64,7 @@ public class DeviceService {
         spaceRepository.save(space);
     }
 
+    public void deleteDevice(UUID deviceId) {
+        deviceRepository.deleteDeviceById(deviceId);
+    }
 }
