@@ -36,4 +36,9 @@ public class GroupController {
     public void assignGroupToUser(@RequestParam UUID groupId, @RequestParam UUID userId) {
         spaceGroupService.assignGroupToUser(groupId, userId);
     }
+
+    @DeleteMapping("/{groupId}")
+    public void deleteGroup(@PathVariable UUID groupId) {
+        spaceGroupService.deleteGroup(groupId);
+    }
 }
