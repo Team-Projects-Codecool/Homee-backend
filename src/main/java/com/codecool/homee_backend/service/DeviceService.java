@@ -3,7 +3,9 @@ package com.codecool.homee_backend.service;
 import com.codecool.homee_backend.controller.dto.device.DeviceDto;
 import com.codecool.homee_backend.controller.dto.device.NewDeviceDto;
 import com.codecool.homee_backend.entity.Device;
+import com.codecool.homee_backend.entity.DeviceActivity;
 import com.codecool.homee_backend.entity.Space;
+import com.codecool.homee_backend.entity.type.ActivityType;
 import com.codecool.homee_backend.mapper.DeviceMapper;
 import com.codecool.homee_backend.repository.DeviceRepository;
 import com.codecool.homee_backend.repository.SpaceRepository;
@@ -18,11 +20,13 @@ import java.util.UUID;
 public class DeviceService {
     private final DeviceRepository deviceRepository;
     private final SpaceRepository spaceRepository;
+    private final DeviceActivityService deviceActivityService;
     private final DeviceMapper deviceMapper;
 
 
-    public DeviceService(DeviceRepository deviceRepository, SpaceRepository spaceRepository, DeviceMapper deviceMapper) {this.deviceRepository = deviceRepository;
+    public DeviceService(DeviceRepository deviceRepository, SpaceRepository spaceRepository, DeviceActivityService deviceActivityService, DeviceMapper deviceMapper) {this.deviceRepository = deviceRepository;
         this.spaceRepository = spaceRepository;
+        this.deviceActivityService = deviceActivityService;
         this.deviceMapper = deviceMapper;
     }
 
@@ -60,11 +64,24 @@ public class DeviceService {
         device.setSpace(space);
         space.addDevice(device);
 
+        DeviceActivity deviceActivity = new DeviceActivity(
+                device,
+                createAssignDeviceDescription(space),
+                ActivityType.INFORMATION
+        );
+
+        device.addActivity(deviceActivity);
+        deviceActivityService.addNewActivity(deviceActivity);
+
         deviceRepository.save(device);
         spaceRepository.save(space);
     }
 
     public void deleteDevice(UUID deviceId) {
         deviceRepository.deleteDeviceById(deviceId);
+    }
+
+    private String createAssignDeviceDescription(Space space) {
+        return "Device has been assigned to " + space.getName() + " space.";
     }
 }

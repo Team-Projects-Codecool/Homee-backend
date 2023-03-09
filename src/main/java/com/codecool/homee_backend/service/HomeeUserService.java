@@ -26,7 +26,7 @@ public class HomeeUserService {
     }
 
     public HomeeUserDto getHomeeUser(UUID id) {
-        return homeeUserRepository.findById(id)
+        return homeeUserRepository.findByUserId(id)
                 .map(homeeUserMapper::mapHomeeUserEntityToDto)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
@@ -38,7 +38,7 @@ public class HomeeUserService {
     }
 
     public void softDelete(UUID id) {
-        HomeeUser homeeUser = homeeUserRepository.findById(id)
+        HomeeUser homeeUser = homeeUserRepository.findByUserId(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         obfuscateSensitiveData(homeeUser);
