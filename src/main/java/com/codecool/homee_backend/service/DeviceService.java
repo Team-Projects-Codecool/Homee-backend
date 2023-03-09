@@ -20,13 +20,11 @@ import java.util.UUID;
 public class DeviceService {
     private final DeviceRepository deviceRepository;
     private final SpaceRepository spaceRepository;
-    private final DeviceActivityService deviceActivityService;
     private final DeviceMapper deviceMapper;
 
 
-    public DeviceService(DeviceRepository deviceRepository, SpaceRepository spaceRepository, DeviceActivityService deviceActivityService, DeviceMapper deviceMapper) {this.deviceRepository = deviceRepository;
+    public DeviceService(DeviceRepository deviceRepository, SpaceRepository spaceRepository, DeviceMapper deviceMapper) {this.deviceRepository = deviceRepository;
         this.spaceRepository = spaceRepository;
-        this.deviceActivityService = deviceActivityService;
         this.deviceMapper = deviceMapper;
     }
 
@@ -71,7 +69,6 @@ public class DeviceService {
         );
 
         device.addActivity(deviceActivity);
-        deviceActivityService.addNewActivity(deviceActivity);
 
         deviceRepository.save(device);
         spaceRepository.save(space);
