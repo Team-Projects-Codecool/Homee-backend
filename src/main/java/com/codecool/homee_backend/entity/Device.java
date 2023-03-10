@@ -39,6 +39,8 @@ public class Device {
     private List<Note> notes = new ArrayList<>();
     @OneToMany(mappedBy = "device", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     private List<DeviceActivity> deviceActivities = new ArrayList<>();
+    @OneToMany(mappedBy = "device", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    private List<Event> events = new ArrayList<>();
     private String about;
 
     public Device(String name, String model, DeviceType deviceType, String spot, LocalDateTime warrantyStart, LocalDateTime warrantyEnd, LocalDateTime purchaseDate, Double purchasePrice, LocalDateTime createdAt, LocalDateTime updatedAt, String about) {

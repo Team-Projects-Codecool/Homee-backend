@@ -61,15 +61,7 @@ public class DeviceService {
 
         device.setSpace(space);
         space.addDevice(device);
-
-        DeviceActivity deviceActivity = new DeviceActivity(
-                device,
-                createAssignDeviceDescription(space),
-                ActivityType.INFORMATION
-        );
-
-        device.addActivity(deviceActivity);
-
+        addAssignedSpaceActivity(device, space);
         deviceRepository.save(device);
         spaceRepository.save(space);
     }
@@ -78,7 +70,17 @@ public class DeviceService {
         deviceRepository.deleteDeviceById(deviceId);
     }
 
-    private String createAssignDeviceDescription(Space space) {
+    private void addAssignedSpaceActivity(Device device, Space space) {
+        DeviceActivity deviceActivity = new DeviceActivity(
+                device,
+                createAssignSpaceDescription(space),
+                ActivityType.INFORMATION
+        );
+
+        device.addActivity(deviceActivity);
+    }
+
+    private String createAssignSpaceDescription(Space space) {
         return "Device has been assigned to " + space.getName() + " space.";
     }
 }
