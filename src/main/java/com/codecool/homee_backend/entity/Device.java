@@ -41,6 +41,8 @@ public class Device {
     private List<DeviceActivity> deviceActivities = new ArrayList<>();
     @OneToMany(mappedBy = "device", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     private List<Event> events = new ArrayList<>();
+    @OneToMany(mappedBy = "device", cascade = { CascadeType.ALL }, orphanRemoval = true)
+    private List<Document> documents = new ArrayList<>();
     private String about;
 
     public Device(String name, String model, DeviceType deviceType, String spot, LocalDateTime warrantyStart, LocalDateTime warrantyEnd, LocalDateTime purchaseDate, Double purchasePrice, LocalDateTime createdAt, LocalDateTime updatedAt, String about) {
@@ -64,4 +66,6 @@ public class Device {
     public void addActivity(DeviceActivity deviceActivity) {
         deviceActivities.add(deviceActivity);
     }
+
+    public void addDocument(Document document) { this.documents.add(document); }
 }
