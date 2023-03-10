@@ -51,6 +51,8 @@ public class HomeeUser {
             inverseJoinColumns = @JoinColumn(name = "space_id")
     )
     private Set<Space> spaces = new HashSet<>();
+    @OneToMany(mappedBy = "homeeUser", cascade = CascadeType.ALL)
+    private List<SupportTicket> supportTickets = new ArrayList<>();
 
     public HomeeUser(String username, String email, String password, LocalDateTime registeredTime,
                      LocalDateTime lastLoggedIn, String firstName, String lastName,
