@@ -3,7 +3,9 @@ package com.codecool.homee_backend.service;
 import com.codecool.homee_backend.controller.dto.device.DeviceDto;
 import com.codecool.homee_backend.controller.dto.device.NewDeviceDto;
 import com.codecool.homee_backend.entity.Device;
+import com.codecool.homee_backend.entity.DeviceActivity;
 import com.codecool.homee_backend.entity.Space;
+import com.codecool.homee_backend.entity.type.ActivityType;
 import com.codecool.homee_backend.mapper.DeviceMapper;
 import com.codecool.homee_backend.repository.DeviceRepository;
 import com.codecool.homee_backend.repository.SpaceRepository;
@@ -24,7 +26,7 @@ public class DeviceService {
     public DeviceService(DeviceRepository deviceRepository, SpaceRepository spaceRepository, DeviceMapper deviceMapper) {this.deviceRepository = deviceRepository;
         this.spaceRepository = spaceRepository;
         this.deviceMapper = deviceMapper;
-    };
+    }
 
     public List<DeviceDto> getAllDevices() {
         return deviceRepository.findAll().stream()
@@ -36,6 +38,12 @@ public class DeviceService {
         return deviceRepository.findById(id)
                 .map(deviceMapper::mapDeviceEntityToDto)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    }
+
+    public List<DeviceDto> getDevicesForSpace(UUID id) {
+        return deviceRepository.findAllBySpaceId(id).stream()
+                .map(deviceMapper::mapDeviceEntityToDto)
+                .toList();
     }
 
     public DeviceDto addNewDevice(NewDeviceDto dto) {
@@ -53,9 +61,26 @@ public class DeviceService {
 
         device.setSpace(space);
         space.addDevice(device);
-
+        addAssignedSpaceActivity(device, space);
         deviceRepository.save(device);
         spaceRepository.save(space);
     }
 
+    public void deleteDevice(UUID deviceId) {
+        deviceRepository.deleteDeviceById(deviceId);
+    }
+
+    private void addAssignedSpaceActivity(Device device, Space space) {
+        DeviceActivity deviceActivity = new DeviceActivity(
+                device,
+                createAssignSpaceDescription(space),
+                ActivityType.INFORMATION
+        );
+
+        device.addActivity(deviceActivity);
+    }
+
+    private String createAssignSpaceDescription(Space space) {
+        return "Device has been assigned to " + space.getName() + " space.";
+    }
 }

@@ -23,13 +23,24 @@ public class DeviceController {
     @GetMapping("/{id}")
     public DeviceDto getDevice(@PathVariable UUID id) { return deviceService.getDevice(id); }
 
+    @GetMapping(params = "spaceId")
+    public List<DeviceDto> getDevicesForSpace(@RequestParam UUID spaceId) {
+        return deviceService.getDevicesForSpace(spaceId);
+    }
+
     @PostMapping
     public DeviceDto addNewDevice(@RequestBody NewDeviceDto newDevice) {
         return deviceService.addNewDevice(newDevice);
     }
 
-    @PutMapping("/{deviceId}/spaces/{spaceId}")
-    public void assignDeviceToSpace(@PathVariable UUID deviceId, @PathVariable UUID spaceId) {
+
+    @PutMapping(params = {"deviceId", "spaceId"})
+    public void assignDeviceToSpace(@RequestParam UUID deviceId, @RequestParam UUID spaceId) {
         deviceService.assignDeviceToSpace(deviceId, spaceId);
+    }
+
+    @DeleteMapping("/{deviceId}")
+    public void deleteDevice(@PathVariable UUID deviceId) {
+        deviceService.deleteDevice(deviceId);
     }
 }

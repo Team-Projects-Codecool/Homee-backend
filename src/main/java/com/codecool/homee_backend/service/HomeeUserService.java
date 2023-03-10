@@ -26,7 +26,7 @@ public class HomeeUserService {
     }
 
     public HomeeUserDto getHomeeUser(UUID id) {
-        return homeeUserRepository.findById(id)
+        return homeeUserRepository.findByUserId(id)
                 .map(homeeUserMapper::mapHomeeUserEntityToDto)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
@@ -35,5 +35,31 @@ public class HomeeUserService {
         HomeeUser homeeUser = homeeUserMapper.mapHomeeUserDtoToEntity(dto);
         HomeeUser homeeUserDb = homeeUserRepository.save(homeeUser);
         return homeeUserMapper.mapHomeeUserEntityToDto(homeeUserDb);
+    }
+
+    public void softDelete(UUID id) {
+        HomeeUser homeeUser = homeeUserRepository.findByUserId(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        obfuscateSensitiveData(homeeUser);
+        homeeUserRepository.save(homeeUser);
+    }
+
+    private void obfuscateSensitiveData(HomeeUser homeeUser) {
+        int firstNameLength = homeeUser.getFirstName().length();
+        homeeUser.setFirstName("*".repeat(firstNameLength));
+
+        int lastNameLength = homeeUser.getLastName().length();
+        homeeUser.setLastName("*".repeat(lastNameLength));
+
+        int usernameLength = homeeUser.getUsername().length();
+        homeeUser.setUsername("*".repeat(usernameLength));
+
+        int atCharPos = homeeUser.getEmail().indexOf('@');
+        String randomPrefix = "deleted-" + UUID.randomUUID();
+
+        homeeUser.setEmail(randomPrefix + homeeUser.getEmail().substring(atCharPos));
+        homeeUser.clearAllUserGroups();
+        homeeUser.clearAllUserSpaces();
     }
 }

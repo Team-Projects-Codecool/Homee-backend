@@ -6,6 +6,8 @@ import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -33,6 +35,14 @@ public class Device {
     private LocalDateTime updatedAt;
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Space space;
+    @OneToMany(mappedBy = "device", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    private List<Note> notes = new ArrayList<>();
+    @OneToMany(mappedBy = "device", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    private List<DeviceActivity> deviceActivities = new ArrayList<>();
+    @OneToMany(mappedBy = "device", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    private List<Event> events = new ArrayList<>();
+    @OneToMany(mappedBy = "device", cascade = { CascadeType.ALL }, orphanRemoval = true)
+    private List<Document> documents = new ArrayList<>();
     private String about;
 
     public Device(String name, String model, DeviceType deviceType, String spot, LocalDateTime warrantyStart, LocalDateTime warrantyEnd, LocalDateTime purchaseDate, Double purchasePrice, LocalDateTime createdAt, LocalDateTime updatedAt, String about) {
@@ -48,4 +58,14 @@ public class Device {
         this.updatedAt = updatedAt;
         this.about = about;
     }
+
+    public void addNote(Note note) {
+        notes.add(note);
+    }
+
+    public void addActivity(DeviceActivity deviceActivity) {
+        deviceActivities.add(deviceActivity);
+    }
+
+    public void addDocument(Document document) { this.documents.add(document); }
 }

@@ -8,13 +8,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class HomeeUserMapper {
 
-    private final SpaceMapper spaceMapper;
-
-    public HomeeUserMapper(SpaceMapper spaceMapper) {
-        this.spaceMapper = spaceMapper;
-    }
-
-
     public HomeeUserDto mapHomeeUserEntityToDto(HomeeUser entity) {
         return new HomeeUserDto(
                 entity.getId(),
@@ -26,9 +19,7 @@ public class HomeeUserMapper {
                 entity.getFirstName(),
                 entity.getLastName(),
                 entity.getAbout(),
-                entity.getSpaces().stream()
-                        .map(spaceMapper::mapSpaceEntityToDto)
-                        .toList()
+                entity.getUserRole()
         );
     }
 
