@@ -79,6 +79,8 @@ public class DocumentController {
 
     private String saveFile(MultipartFile file, NewDocumentDto newDocument) throws IOException {
         String fileName = UUID.randomUUID() + ".pdf";
+        System.getProperty("java.home");
+        //String.join("/", "uploads", "directory");
         String filePath = "/uploads/" + newDocument.deviceId() + "/" + fileName;
         File directory = new File("/uploads/" + newDocument.deviceId());
         if (!directory.exists()) {
