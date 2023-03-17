@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -19,6 +20,8 @@ public class SupportTicket {
     private final UUID id = UUID.randomUUID();
     @ManyToOne(fetch = FetchType.LAZY)
     private HomeeUser homeeUser;
+    @OneToMany(mappedBy = "supportTicket", orphanRemoval = true)
+    private List<SupportTicketReply> supportTicketReplies;
     private String title;
     private String description;
     @Enumerated(EnumType.STRING)
