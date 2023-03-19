@@ -60,10 +60,10 @@ public class DeviceService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         device.setSpace(space);
-        space.addDevice(device);
+//        space.addDevice(device);
         addAssignedSpaceActivity(device, space);
         deviceRepository.save(device);
-        spaceRepository.save(space);
+//        spaceRepository.save(space);
     }
 
     public void deleteDevice(UUID deviceId) {

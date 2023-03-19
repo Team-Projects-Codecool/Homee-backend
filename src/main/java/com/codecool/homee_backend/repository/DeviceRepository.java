@@ -13,8 +13,9 @@ import java.util.UUID;
 @Repository
 public interface DeviceRepository extends JpaRepository<Device, UUID> {
 
-    @Query("SELECT DISTINCT d FROM Device d LEFT JOIN FETCH d.notes WHERE d.id=:id")
-    List<Device> findAllBySpaceId(UUID id);
+//    @Query("SELECT DISTINCT d FROM Device d LEFT JOIN FETCH d.notes WHERE d.id=:id")
+//    List<Device> findAllBySpaceId(UUID id);
+    List<Device> findAllBySpaceId(UUID ID);
 
     @Transactional
     void deleteDeviceById(UUID deviceId);
