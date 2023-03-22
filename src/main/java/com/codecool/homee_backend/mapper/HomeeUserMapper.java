@@ -28,8 +28,6 @@ public class HomeeUserMapper {
                 dto.username(),
                 dto.email(),
                 dto.password(),
-                dto.registeredTime(),
-                dto.lastLoggedIn(),
                 dto.firstName(),
                 dto.lastName(),
                 dto.about()

@@ -1,20 +1,24 @@
 package com.codecool.homee_backend.service;
 
 import com.codecool.homee_backend.controller.dto.homeeuser.HomeeUserDto;
+import com.codecool.homee_backend.controller.dto.homeeuser.LoginUserDto;
 import com.codecool.homee_backend.controller.dto.homeeuser.NewHomeeUserDto;
 import com.codecool.homee_backend.entity.HomeeUser;
 import com.codecool.homee_backend.mapper.HomeeUserMapper;
 import com.codecool.homee_backend.repository.HomeeUserRepository;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class HomeeUserService {
     private final HomeeUserRepository homeeUserRepository;
     private final HomeeUserMapper homeeUserMapper;
@@ -61,5 +65,15 @@ public class HomeeUserService {
         homeeUser.setEmail(randomPrefix + homeeUser.getEmail().substring(atCharPos));
         homeeUser.clearAllUserGroups();
         homeeUser.clearAllUserSpaces();
+    }
+
+    public HomeeUserDto loginUser(LoginUserDto dto) {
+        log.info(dto.username());
+        HomeeUser homeeUser = homeeUserRepository.findByEmailOrUsername(dto.username(), dto.username())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        if (Objects.equals(homeeUser.getPassword(), dto.password())) {
+            return homeeUserMapper.mapHomeeUserEntityToDto(homeeUser);
+        }
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
     }
 }

@@ -2,6 +2,7 @@ package com.codecool.homee_backend.controller;
 
 
 import com.codecool.homee_backend.controller.dto.homeeuser.HomeeUserDto;
+import com.codecool.homee_backend.controller.dto.homeeuser.LoginUserDto;
 import com.codecool.homee_backend.controller.dto.homeeuser.NewHomeeUserDto;
 import com.codecool.homee_backend.service.HomeeUserService;
 import org.springframework.web.bind.annotation.*;
@@ -11,6 +12,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/users")
+@CrossOrigin(origins = "http://localhost:3000")
 public class UserController {
 
     private final HomeeUserService homeeUserService;
@@ -25,6 +27,9 @@ public class UserController {
 
     @GetMapping("/{id}")
     public HomeeUserDto getUser(@PathVariable UUID id) { return homeeUserService.getHomeeUser(id); }
+
+    @PostMapping("/login")
+    public HomeeUserDto loginUser(@RequestBody LoginUserDto dto) { return homeeUserService.loginUser(dto); }
 
     @DeleteMapping("/{id}")
     public void softDeleteUser(@PathVariable UUID id) { homeeUserService.softDelete(id); }

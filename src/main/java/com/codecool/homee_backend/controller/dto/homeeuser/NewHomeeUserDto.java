@@ -9,8 +9,6 @@ public record NewHomeeUserDto(
         String email,
         String password,
         @JsonFormat(pattern="yyyy-MM-dd HH:mm")
-        LocalDateTime registeredTime,
-        @JsonFormat(pattern="yyyy-MM-dd HH:mm")
         LocalDateTime lastLoggedIn,
         String firstName,
         String lastName,
