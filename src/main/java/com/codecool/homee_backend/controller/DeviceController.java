@@ -10,6 +10,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/devices")
+@CrossOrigin(origins = "http://localhost:3000")
 public class DeviceController {
     private final DeviceService deviceService;
 
@@ -26,6 +27,11 @@ public class DeviceController {
     @GetMapping(params = "spaceId")
     public List<DeviceDto> getDevicesForSpace(@RequestParam UUID spaceId) {
         return deviceService.getDevicesForSpace(spaceId);
+    }
+
+    @GetMapping(params = "userId")
+    public List<DeviceDto> getDevicesForUser(@RequestParam UUID userId) {
+        return deviceService.getDevicesForUser(userId);
     }
 
     @PostMapping

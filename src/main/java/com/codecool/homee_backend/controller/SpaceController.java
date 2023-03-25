@@ -3,6 +3,7 @@ package com.codecool.homee_backend.controller;
 
 import com.codecool.homee_backend.controller.dto.space.NewSpaceDto;
 import com.codecool.homee_backend.controller.dto.space.SpaceDto;
+import com.codecool.homee_backend.controller.dto.space.UpdatedSpaceDto;
 import com.codecool.homee_backend.service.SpaceService;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,6 +12,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/spaces")
+@CrossOrigin(origins = "http://localhost:3000")
 public class SpaceController {
     private final SpaceService spaceService;
 
@@ -24,6 +26,11 @@ public class SpaceController {
 
     @GetMapping("/{id}")
     public SpaceDto getSpace(@PathVariable UUID id) { return spaceService.getSpace(id); }
+
+    @PutMapping("/{id}")
+    public SpaceDto updateSpace(@RequestBody UpdatedSpaceDto dto) {
+        return spaceService.updateSpace(dto);
+    }
 
     @GetMapping(params = {"userId"})
     public List<SpaceDto> getSpacesForUserId(@RequestParam UUID userId) {

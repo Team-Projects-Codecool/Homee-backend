@@ -46,6 +46,12 @@ public class DeviceService {
                 .toList();
     }
 
+    public List<DeviceDto> getDevicesForUser(UUID id) {
+        return deviceRepository.findAllByUserId(id).stream()
+                .map(deviceMapper::mapDeviceEntityToDto)
+                .toList();
+    }
+
     public DeviceDto addNewDevice(NewDeviceDto dto) {
         Device device = deviceMapper.mapDeviceDtoToEntity(dto);
         Device deviceDb = deviceRepository.save(device);
