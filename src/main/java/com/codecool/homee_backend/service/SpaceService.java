@@ -120,4 +120,8 @@ public class SpaceService {
         spaceRepository.save(space);
         return spaceMapper.mapSpaceEntityToDto(space);
     }
+
+    public Integer countSpacesForHomeeUserId(UUID userId) {
+        return spaceRepository.findByHomeeUserId(userId).size();
+    }
 }

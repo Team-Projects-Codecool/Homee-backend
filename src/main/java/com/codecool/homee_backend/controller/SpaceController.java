@@ -37,6 +37,11 @@ public class SpaceController {
         return spaceService.getAllSpacesForHomeeUserId(userId);
     }
 
+    @GetMapping(params = {"userId", "count"})
+    public Integer countSpacesForUserId(@RequestParam UUID userId) {
+        return spaceService.countSpacesForHomeeUserId(userId);
+    }
+
     @GetMapping(params = {"groupId"})
     public List<SpaceDto> getSpacesForGroupId(@RequestParam UUID groupId) {
         return spaceService.getAllSpacesForGroup(groupId);

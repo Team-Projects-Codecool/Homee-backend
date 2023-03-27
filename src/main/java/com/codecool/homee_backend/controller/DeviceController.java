@@ -34,6 +34,12 @@ public class DeviceController {
         return deviceService.getDevicesForUser(userId);
     }
 
+    @GetMapping(params = {"userId", "count"})
+    public Integer getAmountOfUserDevices(@RequestParam UUID userId) {
+        return deviceService.countUserDevices(userId);
+    }
+
+
     @PostMapping
     public DeviceDto addNewDevice(@RequestBody NewDeviceDto newDevice) {
         return deviceService.addNewDevice(newDevice);

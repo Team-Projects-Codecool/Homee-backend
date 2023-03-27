@@ -54,6 +54,7 @@ public class DeviceService {
 
     public DeviceDto addNewDevice(NewDeviceDto dto) {
         Device device = deviceMapper.mapDeviceDtoToEntity(dto);
+        addCreatedDeviceActivity(device);
         Device deviceDb = deviceRepository.save(device);
         return deviceMapper.mapDeviceEntityToDto(deviceDb);
     }
@@ -66,14 +67,21 @@ public class DeviceService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         device.setSpace(space);
-//        space.addDevice(device);
         addAssignedSpaceActivity(device, space);
         deviceRepository.save(device);
-//        spaceRepository.save(space);
     }
 
     public void deleteDevice(UUID deviceId) {
         deviceRepository.deleteDeviceById(deviceId);
+    }
+
+    private void addCreatedDeviceActivity(Device device) {
+        DeviceActivity deviceActivity = new DeviceActivity(
+                device,
+                createOnNewDeviceDescription(device),
+                ActivityType.INFORMATION
+        );
+        device.addActivity(deviceActivity);
     }
 
     private void addAssignedSpaceActivity(Device device, Space space) {
@@ -86,7 +94,14 @@ public class DeviceService {
         device.addActivity(deviceActivity);
     }
 
+    private String createOnNewDeviceDescription(Device device) {
+        return "Device " + device.getName() + " has been created";
+    }
     private String createAssignSpaceDescription(Space space) {
         return "Device has been assigned to " + space.getName() + " space.";
+    }
+
+    public Integer countUserDevices(UUID userId) {
+        return deviceRepository.findAllByUserId(userId).size();
     }
 }
