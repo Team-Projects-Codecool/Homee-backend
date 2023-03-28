@@ -16,10 +16,6 @@ public record NewDeviceDto(
         @JsonFormat(pattern="yyyy-MM-dd HH:mm")
         LocalDateTime purchaseDate,
         Double purchasePrice,
-        @JsonFormat(pattern="yyyy-MM-dd HH:mm")
-        LocalDateTime createdAt,
-        @JsonFormat(pattern="yyyy-MM-dd HH:mm")
-        LocalDateTime updatedAt,
         String about
 ) {
 

@@ -6,6 +6,7 @@ import com.codecool.homee_backend.entity.Device;
 import com.codecool.homee_backend.entity.DeviceActivity;
 import com.codecool.homee_backend.entity.Space;
 import com.codecool.homee_backend.entity.type.ActivityType;
+import com.codecool.homee_backend.entity.type.DeviceType;
 import com.codecool.homee_backend.mapper.DeviceMapper;
 import com.codecool.homee_backend.repository.DeviceRepository;
 import com.codecool.homee_backend.repository.SpaceRepository;
@@ -103,5 +104,9 @@ public class DeviceService {
 
     public Integer countUserDevices(UUID userId) {
         return deviceRepository.findAllByUserId(userId).size();
+    }
+
+    public List<DeviceType> getTypes() {
+        return List.of(DeviceType.values());
     }
 }

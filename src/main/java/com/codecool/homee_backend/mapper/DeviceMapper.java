@@ -35,8 +35,6 @@ public class DeviceMapper {
                 dto.warrantyEnd(),
                 dto.purchaseDate(),
                 dto.purchasePrice(),
-                dto.createdAt(),
-                dto.updatedAt(),
                 dto.about()
         );
     }
