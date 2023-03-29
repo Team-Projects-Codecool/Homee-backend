@@ -2,6 +2,7 @@ package com.codecool.homee_backend.controller;
 
 import com.codecool.homee_backend.controller.dto.device.DeviceDto;
 import com.codecool.homee_backend.controller.dto.device.NewDeviceDto;
+import com.codecool.homee_backend.controller.dto.device.UpdatedDeviceDto;
 import com.codecool.homee_backend.entity.type.DeviceType;
 import com.codecool.homee_backend.service.DeviceService;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +25,9 @@ public class DeviceController {
 
     @GetMapping("/{id}")
     public DeviceDto getDevice(@PathVariable UUID id) { return deviceService.getDevice(id); }
+
+    @PutMapping("/{id}")
+    public DeviceDto updateDevice(@RequestBody UpdatedDeviceDto dto) { return deviceService.updateDevice(dto); }
 
     @GetMapping("/types")
     public List<DeviceType> getDeviceTypes() { return deviceService.getTypes(); }

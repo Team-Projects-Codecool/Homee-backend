@@ -2,6 +2,7 @@ package com.codecool.homee_backend.service;
 
 import com.codecool.homee_backend.controller.dto.device.DeviceDto;
 import com.codecool.homee_backend.controller.dto.device.NewDeviceDto;
+import com.codecool.homee_backend.controller.dto.device.UpdatedDeviceDto;
 import com.codecool.homee_backend.entity.Device;
 import com.codecool.homee_backend.entity.DeviceActivity;
 import com.codecool.homee_backend.entity.Space;
@@ -14,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -73,6 +75,13 @@ public class DeviceService {
     }
 
     public void deleteDevice(UUID deviceId) {
+        Device device = deviceRepository.findById(deviceId)
+                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        device.setSpace(null);
+        device.getDeviceActivities().forEach(a -> {
+            a.setDevice(null);
+        });
+        deviceRepository.save(device);
         deviceRepository.deleteDeviceById(deviceId);
     }
 
@@ -108,5 +117,21 @@ public class DeviceService {
 
     public List<DeviceType> getTypes() {
         return List.of(DeviceType.values());
+    }
+
+    public DeviceDto updateDevice(UpdatedDeviceDto dto) {
+        Device device = deviceRepository.findById(dto.id())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        device.setName(dto.name());
+        device.setModel(dto.model());
+        device.setDeviceType(DeviceType.valueOf(dto.deviceType()));
+        device.setAbout(dto.spot());
+        device.setWarrantyStart(dto.warrantyStart());
+        device.setWarrantyEnd(dto.warrantyEnd());
+        device.setPurchaseDate(dto.purchaseDate());
+        device.setAbout(dto.about());
+        device.setUpdatedAt(LocalDateTime.now());
+        deviceRepository.save(device);
+        return deviceMapper.mapDeviceEntityToDto(device);
     }
 }
