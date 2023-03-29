@@ -2,6 +2,8 @@ package com.codecool.homee_backend.controller;
 
 import com.codecool.homee_backend.controller.dto.device.DeviceDto;
 import com.codecool.homee_backend.controller.dto.device.NewDeviceDto;
+import com.codecool.homee_backend.controller.dto.device.UpdatedDeviceDto;
+import com.codecool.homee_backend.entity.type.DeviceType;
 import com.codecool.homee_backend.service.DeviceService;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,6 +12,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/devices")
+@CrossOrigin(origins = "http://localhost:3000")
 public class DeviceController {
     private final DeviceService deviceService;
 
@@ -23,10 +26,27 @@ public class DeviceController {
     @GetMapping("/{id}")
     public DeviceDto getDevice(@PathVariable UUID id) { return deviceService.getDevice(id); }
 
+    @PutMapping("/{id}")
+    public DeviceDto updateDevice(@RequestBody UpdatedDeviceDto dto) { return deviceService.updateDevice(dto); }
+
+    @GetMapping("/types")
+    public List<DeviceType> getDeviceTypes() { return deviceService.getTypes(); }
+
     @GetMapping(params = "spaceId")
     public List<DeviceDto> getDevicesForSpace(@RequestParam UUID spaceId) {
         return deviceService.getDevicesForSpace(spaceId);
     }
+
+    @GetMapping(params = "userId")
+    public List<DeviceDto> getDevicesForUser(@RequestParam UUID userId) {
+        return deviceService.getDevicesForUser(userId);
+    }
+
+    @GetMapping(params = {"userId", "count"})
+    public Integer getAmountOfUserDevices(@RequestParam UUID userId) {
+        return deviceService.countUserDevices(userId);
+    }
+
 
     @PostMapping
     public DeviceDto addNewDevice(@RequestBody NewDeviceDto newDevice) {

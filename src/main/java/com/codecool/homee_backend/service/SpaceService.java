@@ -2,6 +2,7 @@ package com.codecool.homee_backend.service;
 
 import com.codecool.homee_backend.controller.dto.space.NewSpaceDto;
 import com.codecool.homee_backend.controller.dto.space.SpaceDto;
+import com.codecool.homee_backend.controller.dto.space.UpdatedSpaceDto;
 import com.codecool.homee_backend.entity.HomeeUser;
 import com.codecool.homee_backend.entity.Space;
 import com.codecool.homee_backend.entity.SpaceGroup;
@@ -10,6 +11,7 @@ import com.codecool.homee_backend.repository.DeviceRepository;
 import com.codecool.homee_backend.repository.HomeeUserRepository;
 import com.codecool.homee_backend.repository.SpaceGroupRepository;
 import com.codecool.homee_backend.repository.SpaceRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -19,6 +21,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
+@Slf4j
 public class SpaceService {
     private final SpaceRepository spaceRepository;
     private final HomeeUserRepository homeeUserRepository;
@@ -98,7 +101,27 @@ public class SpaceService {
 
     @Transactional
     public void deleteSpaceWithDevices(UUID spaceId) {
+        Space space = spaceRepository.findById(spaceId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        space.getHomeeUsers().forEach(u -> {
+            u.getSpaces().remove(space);
+            homeeUserRepository.save(u);
+        });
+        spaceRepository.save(space);
         deviceRepository.deleteAllBySpaceId(spaceId);
         spaceRepository.deleteById(spaceId);
+    }
+
+    public SpaceDto updateSpace(UpdatedSpaceDto dto) {
+        Space space = spaceRepository.findById(dto.id())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        space.setName(dto.name());
+        space.setAbout(dto.about());
+        spaceRepository.save(space);
+        return spaceMapper.mapSpaceEntityToDto(space);
+    }
+
+    public Integer countSpacesForHomeeUserId(UUID userId) {
+        return spaceRepository.findByHomeeUserId(userId).size();
     }
 }

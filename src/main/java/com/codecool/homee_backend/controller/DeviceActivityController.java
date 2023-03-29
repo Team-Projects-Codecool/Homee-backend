@@ -9,6 +9,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/activities")
+@CrossOrigin(origins = "http://localhost:3000")
 public class DeviceActivityController {
 
     private final DeviceActivityService deviceActivityService;

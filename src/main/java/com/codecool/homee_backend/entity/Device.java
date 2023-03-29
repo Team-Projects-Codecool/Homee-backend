@@ -31,8 +31,8 @@ public class Device {
     private LocalDateTime warrantyEnd;
     private LocalDateTime purchaseDate;
     private Double purchasePrice;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime updatedAt = LocalDateTime.now();
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Space space;
     @OneToMany(mappedBy = "device", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
@@ -45,7 +45,7 @@ public class Device {
     private List<Document> documents = new ArrayList<>();
     private String about;
 
-    public Device(String name, String model, DeviceType deviceType, String spot, LocalDateTime warrantyStart, LocalDateTime warrantyEnd, LocalDateTime purchaseDate, Double purchasePrice, LocalDateTime createdAt, LocalDateTime updatedAt, String about) {
+    public Device(String name, String model, DeviceType deviceType, String spot, LocalDateTime warrantyStart, LocalDateTime warrantyEnd, LocalDateTime purchaseDate, Double purchasePrice, String about) {
         this.name = name;
         this.model = model;
         this.deviceType = deviceType;
@@ -54,8 +54,6 @@ public class Device {
         this.warrantyEnd = warrantyEnd;
         this.purchaseDate = purchaseDate;
         this.purchasePrice = purchasePrice;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
         this.about = about;
     }
 

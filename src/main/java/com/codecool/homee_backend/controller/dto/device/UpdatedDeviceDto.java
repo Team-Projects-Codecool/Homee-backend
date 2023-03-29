@@ -3,8 +3,10 @@ package com.codecool.homee_backend.controller.dto.device;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
-public record NewDeviceDto(
+public record UpdatedDeviceDto(
+        UUID id,
         String name,
         String model,
         String deviceType,
@@ -18,5 +20,4 @@ public record NewDeviceDto(
         Double purchasePrice,
         String about
 ) {
-
 }
