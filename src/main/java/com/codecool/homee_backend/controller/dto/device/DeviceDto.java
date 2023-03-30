@@ -22,7 +22,8 @@ public record DeviceDto (
         LocalDateTime createdAt,
         @JsonFormat(pattern="yyyy-MM-dd HH:mm")
         LocalDateTime updatedAt,
-        String about
+        String about,
+        String imageName
 ) {
 
 }

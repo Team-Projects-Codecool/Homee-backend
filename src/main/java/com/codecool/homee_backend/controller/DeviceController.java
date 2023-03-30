@@ -5,14 +5,18 @@ import com.codecool.homee_backend.controller.dto.device.NewDeviceDto;
 import com.codecool.homee_backend.controller.dto.device.UpdatedDeviceDto;
 import com.codecool.homee_backend.entity.type.DeviceType;
 import com.codecool.homee_backend.service.DeviceService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/devices")
 @CrossOrigin(origins = "http://localhost:3000")
+@Slf4j
 public class DeviceController {
     private final DeviceService deviceService;
 
@@ -51,6 +55,11 @@ public class DeviceController {
     @PostMapping
     public DeviceDto addNewDevice(@RequestBody NewDeviceDto newDevice) {
         return deviceService.addNewDevice(newDevice);
+    }
+
+    @PostMapping(params = {"image"})
+    public void uploadDeviceImage(@RequestParam("file") MultipartFile file, @RequestParam("deviceId") String deviceId) throws IOException {
+        deviceService.changeDeviceImage(file, deviceId);
     }
 
 
