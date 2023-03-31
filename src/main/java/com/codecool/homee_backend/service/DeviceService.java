@@ -76,6 +76,7 @@ public class DeviceService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         device.setSpace(space);
+        device.setUpdatedAt(LocalDateTime.now());
         addAssignedSpaceActivity(device, space);
         deviceRepository.save(device);
     }
