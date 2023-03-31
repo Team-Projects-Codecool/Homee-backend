@@ -30,6 +30,7 @@ public class Device {
     private LocalDateTime warrantyStart;
     private LocalDateTime warrantyEnd;
     private LocalDateTime purchaseDate;
+    private String imageName;
     private Double purchasePrice;
     private LocalDateTime createdAt = LocalDateTime.now();
     private LocalDateTime updatedAt = LocalDateTime.now();
@@ -37,7 +38,7 @@ public class Device {
     private Space space;
     @OneToMany(mappedBy = "device", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     private List<Note> notes = new ArrayList<>();
-    @OneToMany(mappedBy = "device", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    @OneToMany(mappedBy = "device", cascade = { CascadeType.PERSIST, CascadeType.MERGE }, orphanRemoval = true)
     private List<DeviceActivity> deviceActivities = new ArrayList<>();
     @OneToMany(mappedBy = "device", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     private List<Event> events = new ArrayList<>();

@@ -11,12 +11,18 @@ import com.codecool.homee_backend.entity.type.DeviceType;
 import com.codecool.homee_backend.mapper.DeviceMapper;
 import com.codecool.homee_backend.repository.DeviceRepository;
 import com.codecool.homee_backend.repository.SpaceRepository;
+import com.codecool.homee_backend.utils.FileUploadUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
+import java.util.Random;
 import java.util.UUID;
 
 @Service
@@ -70,6 +76,7 @@ public class DeviceService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         device.setSpace(space);
+        device.setUpdatedAt(LocalDateTime.now());
         addAssignedSpaceActivity(device, space);
         deviceRepository.save(device);
     }
@@ -133,5 +140,16 @@ public class DeviceService {
         device.setUpdatedAt(LocalDateTime.now());
         deviceRepository.save(device);
         return deviceMapper.mapDeviceEntityToDto(device);
+    }
+
+    public void changeDeviceImage(MultipartFile file, String deviceId) throws IOException {
+        Device device = deviceRepository.findById(UUID.fromString(deviceId))
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        String originalFileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
+        Random rand = new Random();
+        String fileName = device.getId() + "-" + rand.nextInt(1000) + originalFileName;
+        device.setImageName(fileName);
+        deviceRepository.save(device);
+        FileUploadUtil.saveDevicePhoto(fileName, file);
     }
 }

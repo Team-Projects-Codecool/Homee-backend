@@ -21,7 +21,8 @@ public class DeviceMapper {
                 entity.getPurchasePrice(),
                 entity.getCreatedAt(),
                 entity.getUpdatedAt(),
-                entity.getAbout()
+                entity.getAbout(),
+                entity.getImageName()
         );
     }
 
