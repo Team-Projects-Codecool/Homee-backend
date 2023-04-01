@@ -11,10 +11,11 @@ import com.codecool.homee_backend.repository.DeviceRepository;
 import com.codecool.homee_backend.repository.HomeeUserRepository;
 import com.codecool.homee_backend.repository.SpaceGroupRepository;
 import com.codecool.homee_backend.repository.SpaceRepository;
+import com.codecool.homee_backend.service.exception.HomeeUserNotFoundException;
+import com.codecool.homee_backend.service.exception.SpaceGroupNotFoundException;
+import com.codecool.homee_backend.service.exception.SpaceNotFoundException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -59,7 +60,7 @@ public class SpaceService {
     public SpaceDto getSpace(UUID spaceId) {
         return spaceRepository.findById(spaceId)
                 .map(spaceMapper::mapSpaceEntityToDto)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new SpaceNotFoundException(spaceId));
     }
 
     public SpaceDto addNewSpace(NewSpaceDto dto) {
@@ -70,9 +71,9 @@ public class SpaceService {
 
     public void assignSpaceToUser(UUID spaceId, UUID userId) {
         Space space = spaceRepository.findById(spaceId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new SpaceNotFoundException(spaceId));
         HomeeUser homeeUser = homeeUserRepository.findById(userId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new HomeeUserNotFoundException(userId));
 
         space.addHomeeUser(homeeUser);
         homeeUser.addSpace(space);
@@ -82,9 +83,9 @@ public class SpaceService {
 
     public void assignSpaceToGroup(UUID spaceId, UUID groupId) {
         Space space = spaceRepository.findById(spaceId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new SpaceNotFoundException(spaceId));
         SpaceGroup spaceGroup = spaceGroupRepository.findById(groupId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new SpaceGroupNotFoundException(groupId));
 
         space.setSpaceGroup(spaceGroup);
         spaceGroup.addSpace(space);
@@ -94,7 +95,7 @@ public class SpaceService {
     @Transactional
     public void deleteSpace(UUID spaceId) {
         Space space = spaceRepository.findById(spaceId)
-                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                        .orElseThrow(() -> new SpaceNotFoundException(spaceId));
         space.getDevices().forEach(d -> d.setSpace(null));
         spaceRepository.deleteById(spaceId);
     }
@@ -102,7 +103,7 @@ public class SpaceService {
     @Transactional
     public void deleteSpaceWithDevices(UUID spaceId) {
         Space space = spaceRepository.findById(spaceId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new SpaceNotFoundException(spaceId));
         space.getHomeeUsers().forEach(u -> {
             u.getSpaces().remove(space);
             homeeUserRepository.save(u);
@@ -114,7 +115,7 @@ public class SpaceService {
 
     public SpaceDto updateSpace(UpdatedSpaceDto dto) {
         Space space = spaceRepository.findById(dto.id())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new SpaceNotFoundException(dto.id()));
         space.setName(dto.name());
         space.setAbout(dto.about());
         spaceRepository.save(space);

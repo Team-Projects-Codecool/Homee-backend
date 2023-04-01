@@ -6,6 +6,7 @@ import com.codecool.homee_backend.entity.HomeeUser;
 import com.codecool.homee_backend.mapper.DeviceActivityMapper;
 import com.codecool.homee_backend.repository.DeviceActivityRepository;
 import com.codecool.homee_backend.repository.HomeeUserRepository;
+import com.codecool.homee_backend.service.exception.ActivityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -44,7 +45,7 @@ public class DeviceActivityService {
     public DeviceActivityDto getActivity(UUID id) {
         return deviceActivityRepository.findById(id)
                 .map(deviceActivityMapper::mapUserActivityEntityToDto)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new ActivityNotFoundException(id));
     }
 
     public void addNewActivity(DeviceActivity deviceActivity) {

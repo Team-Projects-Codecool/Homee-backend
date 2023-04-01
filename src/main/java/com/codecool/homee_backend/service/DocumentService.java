@@ -7,9 +7,9 @@ import com.codecool.homee_backend.entity.Document;
 import com.codecool.homee_backend.mapper.DocumentMapper;
 import com.codecool.homee_backend.repository.DeviceRepository;
 import com.codecool.homee_backend.repository.DocumentRepository;
-import org.springframework.http.HttpStatus;
+import com.codecool.homee_backend.service.exception.DeviceNotFoundException;
+import com.codecool.homee_backend.service.exception.DocumentNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.UUID;
@@ -29,7 +29,7 @@ public class DocumentService {
 
     public Document addNewDocument(NewDocumentDto newDocument, String filePath) {
         Device device = deviceRepository.findById(newDocument.deviceId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new DeviceNotFoundException(newDocument.deviceId()));
         Document document = documentMapper.mapDocumentDtoToEntity(newDocument);
         document.setDevice(device);
         document.setPath(filePath);
@@ -40,7 +40,7 @@ public class DocumentService {
     public DocumentDto getDocument(UUID id) {
         return documentRepository.findById(id)
                 .map(documentMapper::mapDocumentEntityToDto)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new DocumentNotFoundException(id));
     }
 
     public List<DocumentDto> getDocumentsForDevice(UUID id) {
@@ -52,7 +52,7 @@ public class DocumentService {
 
     public Document getDownloadDocumentData(UUID id) {
         return documentRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new DocumentNotFoundException(id));
     }
 
     public void deleteDocument(UUID id) {

@@ -11,12 +11,12 @@ import com.codecool.homee_backend.entity.type.DeviceType;
 import com.codecool.homee_backend.mapper.DeviceMapper;
 import com.codecool.homee_backend.repository.DeviceRepository;
 import com.codecool.homee_backend.repository.SpaceRepository;
+import com.codecool.homee_backend.service.exception.DeviceNotFoundException;
+import com.codecool.homee_backend.service.exception.SpaceNotFoundException;
 import com.codecool.homee_backend.utils.FileUploadUtil;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -46,7 +46,7 @@ public class DeviceService {
     public DeviceDto getDevice(UUID id) {
         return deviceRepository.findById(id)
                 .map(deviceMapper::mapDeviceEntityToDto)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new DeviceNotFoundException(id));
     }
 
     public List<DeviceDto> getDevicesForSpace(UUID id) {
@@ -71,9 +71,9 @@ public class DeviceService {
 
     public void assignDeviceToSpace(UUID deviceId, UUID spaceId) {
         Device device = deviceRepository.findById(deviceId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new DeviceNotFoundException(deviceId));
         Space space = spaceRepository.findById(spaceId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new SpaceNotFoundException(spaceId));
 
         device.setSpace(space);
         device.setUpdatedAt(LocalDateTime.now());
@@ -83,7 +83,7 @@ public class DeviceService {
 
     public void deleteDevice(UUID deviceId) {
         Device device = deviceRepository.findById(deviceId)
-                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                        .orElseThrow(() -> new DeviceNotFoundException(deviceId));
         device.setSpace(null);
         device.getDeviceActivities().forEach(a -> {
             a.setDevice(null);
@@ -128,7 +128,7 @@ public class DeviceService {
 
     public DeviceDto updateDevice(UpdatedDeviceDto dto) {
         Device device = deviceRepository.findById(dto.id())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new DeviceNotFoundException(dto.id()));
         device.setName(dto.name());
         device.setModel(dto.model());
         device.setDeviceType(DeviceType.valueOf(dto.deviceType()));
@@ -144,7 +144,7 @@ public class DeviceService {
 
     public void changeDeviceImage(MultipartFile file, String deviceId) throws IOException {
         Device device = deviceRepository.findById(UUID.fromString(deviceId))
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new DeviceNotFoundException(UUID.fromString(deviceId)));
         String originalFileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
         Random rand = new Random();
         String fileName = device.getId() + "-" + rand.nextInt(1000) + originalFileName;
