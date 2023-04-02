@@ -6,6 +6,7 @@ import com.codecool.homee_backend.controller.dto.homeeuser.NewHomeeUserDto;
 import com.codecool.homee_backend.entity.HomeeUser;
 import com.codecool.homee_backend.mapper.HomeeUserMapper;
 import com.codecool.homee_backend.repository.HomeeUserRepository;
+import com.codecool.homee_backend.service.exception.HomeeUserNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -32,7 +33,7 @@ public class HomeeUserService {
     public HomeeUserDto getHomeeUser(UUID id) {
         return homeeUserRepository.findByUserId(id)
                 .map(homeeUserMapper::mapHomeeUserEntityToDto)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new HomeeUserNotFoundException(id));
     }
 
     public HomeeUserDto addNewHomeeUser(NewHomeeUserDto dto) {
@@ -43,7 +44,7 @@ public class HomeeUserService {
 
     public void softDelete(UUID id) {
         HomeeUser homeeUser = homeeUserRepository.findByUserId(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new HomeeUserNotFoundException(id));
 
         obfuscateSensitiveData(homeeUser);
         homeeUserRepository.save(homeeUser);
@@ -70,10 +71,10 @@ public class HomeeUserService {
     public HomeeUserDto loginUser(LoginUserDto dto) {
         log.info(dto.username());
         HomeeUser homeeUser = homeeUserRepository.findByEmailOrUsername(dto.username(), dto.username())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED));
         if (Objects.equals(homeeUser.getPassword(), dto.password())) {
             return homeeUserMapper.mapHomeeUserEntityToDto(homeeUser);
         }
-        throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
     }
 }

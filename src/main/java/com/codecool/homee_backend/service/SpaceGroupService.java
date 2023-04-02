@@ -7,9 +7,9 @@ import com.codecool.homee_backend.entity.SpaceGroup;
 import com.codecool.homee_backend.mapper.SpaceGroupMapper;
 import com.codecool.homee_backend.repository.HomeeUserRepository;
 import com.codecool.homee_backend.repository.SpaceGroupRepository;
-import org.springframework.http.HttpStatus;
+import com.codecool.homee_backend.service.exception.HomeeUserNotFoundException;
+import com.codecool.homee_backend.service.exception.SpaceNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -37,7 +37,7 @@ public class SpaceGroupService {
     public SpaceGroupDto getSpaceGroup(UUID id) {
         return spaceGroupRepository.findById(id)
                 .map(spaceGroupMapper::mapGroupEntityToDto)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new SpaceNotFoundException(id));
     }
 
     public SpaceGroupDto addNewSpaceGroup(NewSpaceGroupDto dto) {
@@ -48,10 +48,10 @@ public class SpaceGroupService {
 
     public void assignGroupToUser(UUID groupId, UUID userId) {
         SpaceGroup spaceGroup = spaceGroupRepository.findById(groupId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new SpaceNotFoundException(groupId));
 
         HomeeUser homeeUser = homeeUserRepository.findById(userId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new HomeeUserNotFoundException(userId));
 
         spaceGroup.setHomeeUser(homeeUser);
         homeeUser.addGroup(spaceGroup);
@@ -62,7 +62,7 @@ public class SpaceGroupService {
     @Transactional
     public void deleteGroup(UUID groupId) {
         SpaceGroup spaceGroup = spaceGroupRepository.findById(groupId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new SpaceNotFoundException(groupId));
         spaceGroup.getSpaces().forEach(s -> s.setSpaceGroup(null));
         spaceGroupRepository.deleteById(groupId);
     }

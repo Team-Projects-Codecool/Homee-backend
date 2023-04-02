@@ -10,9 +10,9 @@ import com.codecool.homee_backend.entity.type.ActivityType;
 import com.codecool.homee_backend.mapper.EventMapper;
 import com.codecool.homee_backend.repository.DeviceRepository;
 import com.codecool.homee_backend.repository.EventRepository;
-import org.springframework.http.HttpStatus;
+import com.codecool.homee_backend.service.exception.DeviceNotFoundException;
+import com.codecool.homee_backend.service.exception.EventNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.UUID;
@@ -34,7 +34,7 @@ public class EventService {
     public EventDto getSingleEvent(UUID id) {
         return eventRepository.findById(id)
                 .map(eventMapper::mapEventEntityToDto)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new EventNotFoundException(id));
     }
 
     public List<EventDto> getEventsForDevice(UUID deviceId) {
@@ -49,7 +49,7 @@ public class EventService {
 
     public EventDto updateEvent(UpdatedEvent updatedEvent) {
         Event event = eventRepository.findById(updatedEvent.eventId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new EventNotFoundException(updatedEvent.eventId()));
         event.setName(updatedEvent.name());
         event.setEventType(updatedEvent.eventType());
         event.setNotification(updatedEvent.notification());
@@ -60,7 +60,7 @@ public class EventService {
 
     public EventDto addNewEvent(NewEventDto newEvent) {
         Device device = deviceRepository.findById(newEvent.deviceId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new DeviceNotFoundException(newEvent.deviceId()));
         Event event = eventMapper.mapEventDtoToEntity(newEvent);
         addCreatedNewEventActivity(device, event);
         event.setDevice(device);

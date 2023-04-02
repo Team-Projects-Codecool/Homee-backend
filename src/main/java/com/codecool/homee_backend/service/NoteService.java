@@ -8,9 +8,9 @@ import com.codecool.homee_backend.entity.Note;
 import com.codecool.homee_backend.mapper.NoteMapper;
 import com.codecool.homee_backend.repository.DeviceRepository;
 import com.codecool.homee_backend.repository.NoteRepository;
-import org.springframework.http.HttpStatus;
+import com.codecool.homee_backend.service.exception.DeviceNotFoundException;
+import com.codecool.homee_backend.service.exception.NoteNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.UUID;
@@ -31,7 +31,7 @@ public class NoteService {
     public NoteDto getNote(UUID noteId) {
         return noteRepository.findById(noteId)
                 .map(noteMapper::mapNoteEntityToDto)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new NoteNotFoundException(noteId));
     }
 
     public List<NoteDto> getNotesForDevice(UUID deviceId) {
@@ -42,7 +42,7 @@ public class NoteService {
 
     public NoteDto addNewNote(NewNoteDto newNote) {
         Device device = deviceRepository.findById(newNote.deviceId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new DeviceNotFoundException(newNote.deviceId()));
         Note note = noteMapper.mapNoteDtoToEntity(newNote);
         Note noteDb = noteRepository.save(note);
         device.addNote(note);
@@ -53,7 +53,7 @@ public class NoteService {
 
     public NoteDto updateNote(UpdatedNoteDto updatedNote) {
         Note dbNote = noteRepository.findById(updatedNote.id())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new NoteNotFoundException(updatedNote.id()));
         assignUpdatedNoteData(updatedNote, dbNote);
         noteRepository.save(dbNote);
         return noteMapper.mapNoteEntityToDto(dbNote);
@@ -62,9 +62,9 @@ public class NoteService {
 
     public void assignNoteToDevice(UUID noteId, UUID deviceId) {
         Note note = noteRepository.findById(noteId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new NoteNotFoundException(noteId));
         Device device = deviceRepository.findById(deviceId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new DeviceNotFoundException(deviceId));
         note.setDevice(device);
         device.addNote(note);
         deviceRepository.save(device);

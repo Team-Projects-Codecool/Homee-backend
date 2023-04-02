@@ -8,9 +8,9 @@ import com.codecool.homee_backend.entity.status.TicketStatus;
 import com.codecool.homee_backend.mapper.SupportTicketMapper;
 import com.codecool.homee_backend.repository.HomeeUserRepository;
 import com.codecool.homee_backend.repository.SupportTicketRepository;
-import org.springframework.http.HttpStatus;
+import com.codecool.homee_backend.service.exception.HomeeUserNotFoundException;
+import com.codecool.homee_backend.service.exception.SupportTicketNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -46,12 +46,12 @@ public class SupportTicketService {
     public SupportTicketDto getSupportTicket(UUID id) {
         return supportTicketRepository.findById(id)
                 .map(supportTicketMapper::mapSupportTicketEntityToDto)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new SupportTicketNotFoundException(id));
     }
 
     public SupportTicketDto closeSupportTicket(UUID id) {
         SupportTicket supportTicket = supportTicketRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new SupportTicketNotFoundException(id));
         supportTicket.setTicketStatus(TicketStatus.CLOSED);
         supportTicket.setClosingTime(LocalDateTime.now());
         SupportTicket saved = supportTicketRepository.save(supportTicket);
@@ -64,7 +64,7 @@ public class SupportTicketService {
 
     public SupportTicketDto addNewSupportTicket(NewSupportTicketDto newSupportTicket) {
         HomeeUser homeeUser = homeeUserRepository.findById(newSupportTicket.userId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new HomeeUserNotFoundException(newSupportTicket.userId()));
         SupportTicket supportTicket = supportTicketMapper.mapSupportTicketDtoToEntity(newSupportTicket);
         supportTicket.setHomeeUser(homeeUser);
         SupportTicket supportTicketDb = supportTicketRepository.save(supportTicket);
