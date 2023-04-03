@@ -1,9 +1,7 @@
 package com.codecool.homee_backend.controller;
 
 
-import com.codecool.homee_backend.controller.dto.homeeuser.HomeeUserDto;
-import com.codecool.homee_backend.controller.dto.homeeuser.LoginUserDto;
-import com.codecool.homee_backend.controller.dto.homeeuser.NewHomeeUserDto;
+import com.codecool.homee_backend.controller.dto.homeeuser.*;
 import com.codecool.homee_backend.service.HomeeUserService;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,6 +28,12 @@ public class UserController {
 
     @PostMapping("/login")
     public HomeeUserDto loginUser(@RequestBody LoginUserDto dto) { return homeeUserService.loginUser(dto); }
+
+    @PutMapping
+    public HomeeUserDto updateUser(@RequestBody UpdatedHomeeUserDto dto) { return homeeUserService.updateUser(dto); }
+
+    @PutMapping(params = "password")
+    public HomeeUserDto changeUserPassword(@RequestBody ChangeHomeeUserPasswordDto dto) { return homeeUserService.changeUserPassword(dto); }
 
     @DeleteMapping("/{id}")
     public void softDeleteUser(@PathVariable UUID id) { homeeUserService.softDelete(id); }

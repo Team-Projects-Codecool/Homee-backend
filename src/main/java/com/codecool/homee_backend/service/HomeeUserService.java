@@ -1,8 +1,6 @@
 package com.codecool.homee_backend.service;
 
-import com.codecool.homee_backend.controller.dto.homeeuser.HomeeUserDto;
-import com.codecool.homee_backend.controller.dto.homeeuser.LoginUserDto;
-import com.codecool.homee_backend.controller.dto.homeeuser.NewHomeeUserDto;
+import com.codecool.homee_backend.controller.dto.homeeuser.*;
 import com.codecool.homee_backend.entity.HomeeUser;
 import com.codecool.homee_backend.mapper.HomeeUserMapper;
 import com.codecool.homee_backend.repository.HomeeUserRepository;
@@ -50,6 +48,38 @@ public class HomeeUserService {
         homeeUserRepository.save(homeeUser);
     }
 
+    public HomeeUserDto loginUser(LoginUserDto dto) {
+        HomeeUser homeeUser = homeeUserRepository.findByEmailOrUsername(dto.username(), dto.username())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED));
+        if (Objects.equals(homeeUser.getPassword(), dto.password())) {
+            return homeeUserMapper.mapHomeeUserEntityToDto(homeeUser);
+        }
+        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+    }
+
+    public HomeeUserDto updateUser(UpdatedHomeeUserDto dto) {
+        HomeeUser homeeUser = homeeUserRepository.findById(dto.id())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED));
+        homeeUser.setUsername(dto.username());
+        homeeUser.setEmail(dto.email());
+        homeeUser.setFirstName(dto.firstName());
+        homeeUser.setLastName(dto.lastName());
+        homeeUser.setAbout(dto.about());
+        homeeUserRepository.save(homeeUser);
+        return homeeUserMapper.mapHomeeUserEntityToDto(homeeUser);
+    }
+
+    public HomeeUserDto changeUserPassword(ChangeHomeeUserPasswordDto dto) {
+        HomeeUser homeeUser = homeeUserRepository.findById(dto.id())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED));
+        if (!Objects.equals(homeeUser.getPassword(), dto.oldPassword())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+        homeeUser.setPassword(dto.newPassword());
+        homeeUserRepository.save(homeeUser);
+        return homeeUserMapper.mapHomeeUserEntityToDto(homeeUser);
+    }
+
     private void obfuscateSensitiveData(HomeeUser homeeUser) {
         int firstNameLength = homeeUser.getFirstName().length();
         homeeUser.setFirstName("*".repeat(firstNameLength));
@@ -66,15 +96,5 @@ public class HomeeUserService {
         homeeUser.setEmail(randomPrefix + homeeUser.getEmail().substring(atCharPos));
         homeeUser.clearAllUserGroups();
         homeeUser.clearAllUserSpaces();
-    }
-
-    public HomeeUserDto loginUser(LoginUserDto dto) {
-        log.info(dto.username());
-        HomeeUser homeeUser = homeeUserRepository.findByEmailOrUsername(dto.username(), dto.username())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED));
-        if (Objects.equals(homeeUser.getPassword(), dto.password())) {
-            return homeeUserMapper.mapHomeeUserEntityToDto(homeeUser);
-        }
-        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
     }
 }
