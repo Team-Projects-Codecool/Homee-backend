@@ -1,6 +1,5 @@
 package com.codecool.homee_backend.entity;
 
-import com.codecool.homee_backend.entity.type.UserRole;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,7 +8,6 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -30,8 +28,6 @@ public class HomeeUser {
     @EqualsAndHashCode.Include
     @Column(unique = true)
     private String email;
-    @NotBlank(message = "Cannot be empty.")
-    @Size(min = 5, max = 30, message = "Password must be between 5 and 30 characters.")
     private String password;
     @JsonFormat(pattern="yyyy-MM-dd HH:mm")
     private LocalDateTime registeredTime = LocalDateTime.now();
@@ -39,9 +35,8 @@ public class HomeeUser {
     private LocalDateTime lastLoggedIn;
     private String firstName;
     private String lastName;
+    private String role;
     private String about;
-    @Enumerated(EnumType.STRING)
-    private UserRole userRole = UserRole.USER;
     @OneToMany(mappedBy = "homeeUser", cascade = {CascadeType.PERSIST, CascadeType.MERGE })
     private List<SpaceGroup> spaceGroups = new ArrayList<>();
     @ManyToMany

@@ -4,10 +4,14 @@ import com.codecool.homee_backend.controller.dto.homeeuser.*;
 import com.codecool.homee_backend.entity.HomeeUser;
 import com.codecool.homee_backend.mapper.HomeeUserMapper;
 import com.codecool.homee_backend.repository.HomeeUserRepository;
+import com.codecool.homee_backend.service.auth.JwtTokenService;
 import com.codecool.homee_backend.service.exception.HomeeUserNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -15,11 +19,16 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
+import static com.codecool.homee_backend.config.auth.SpringSecurityConfig.USER;
+
 @Service
 @AllArgsConstructor
 @Slf4j
 public class HomeeUserService {
     private final HomeeUserRepository homeeUserRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
+    private final JwtTokenService jwtTokenService;
     private final HomeeUserMapper homeeUserMapper;
 
     public List<HomeeUserDto> getAllHomeeUsers() {
@@ -34,8 +43,10 @@ public class HomeeUserService {
                 .orElseThrow(() -> new HomeeUserNotFoundException(id));
     }
 
-    public HomeeUserDto addNewHomeeUser(NewHomeeUserDto dto) {
+    public HomeeUserDto registerUser(NewHomeeUserDto dto) {
         HomeeUser homeeUser = homeeUserMapper.mapHomeeUserDtoToEntity(dto);
+        homeeUser.setPassword(passwordEncoder.encode(homeeUser.getPassword()));
+        homeeUser.setRole(USER);
         HomeeUser homeeUserDb = homeeUserRepository.save(homeeUser);
         return homeeUserMapper.mapHomeeUserEntityToDto(homeeUserDb);
     }
@@ -48,13 +59,14 @@ public class HomeeUserService {
         homeeUserRepository.save(homeeUser);
     }
 
-    public HomeeUserDto loginUser(LoginUserDto dto) {
-        HomeeUser homeeUser = homeeUserRepository.findByEmailOrUsername(dto.username(), dto.username())
+    public AuthenticatedUserDto loginUser(LoginUserDto dto) {
+        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                dto.username(), dto.password()
+        );
+        authenticationManager.authenticate(authentication);
+        HomeeUser homeeUser = homeeUserRepository.findByEmail(dto.username())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED));
-        if (Objects.equals(homeeUser.getPassword(), dto.password())) {
-            return homeeUserMapper.mapHomeeUserEntityToDto(homeeUser);
-        }
-        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        return new AuthenticatedUserDto(homeeUser.getId(), jwtTokenService.generateToken(dto.username()));
     }
 
     public HomeeUserDto updateUser(UpdatedHomeeUserDto dto) {
@@ -97,4 +109,5 @@ public class HomeeUserService {
         homeeUser.clearAllUserGroups();
         homeeUser.clearAllUserSpaces();
     }
+
 }

@@ -17,5 +17,7 @@ public interface HomeeUserRepository extends JpaRepository<HomeeUser, UUID> {
     @Query("SELECT h FROM HomeeUser h LEFT JOIN FETCH h.spaces WHERE h.id=:id")
     Optional<HomeeUser> findByUserId(UUID id);
 
+    Optional<HomeeUser> findByEmail(String email);
+
     Optional<HomeeUser> findByEmailOrUsername(String username, String email);
 }

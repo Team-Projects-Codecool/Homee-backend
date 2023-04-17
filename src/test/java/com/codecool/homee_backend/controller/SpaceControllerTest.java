@@ -2,7 +2,9 @@ package com.codecool.homee_backend.controller;
 
 import com.codecool.homee_backend.controller.dto.space.NewSpaceDto;
 import com.codecool.homee_backend.controller.dto.space.SpaceDto;
+import com.codecool.homee_backend.repository.HomeeUserRepository;
 import com.codecool.homee_backend.service.SpaceService;
+import com.codecool.homee_backend.service.auth.JwtTokenService;
 import com.codecool.homee_backend.service.exception.SpaceNotFoundException;
 import org.hamcrest.Matchers;
 import org.instancio.Instancio;
@@ -12,12 +14,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.List;
 import java.util.UUID;
 
+import static com.codecool.homee_backend.config.auth.SpringSecurityConfig.USER;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -32,6 +36,13 @@ class SpaceControllerTest {
     @MockBean
     private SpaceService spaceService;
 
+    @MockBean
+    private JwtTokenService jwtTokenService;
+
+    @MockBean
+    private HomeeUserRepository userRepository;
+
+    @WithMockUser(roles = USER)
     @Test
     void shouldReturnEmptyJson() throws Exception {
         // given:
@@ -47,6 +58,7 @@ class SpaceControllerTest {
 
     }
 
+    @WithMockUser(roles = USER)
     @Test
     void shouldReturnSpacesJson() throws Exception {
         // given:
@@ -69,6 +81,7 @@ class SpaceControllerTest {
 
     }
 
+    @WithMockUser(roles = USER)
     @Test
     void shouldReturn404WhenSpaceNotFound() throws Exception {
         // given:
@@ -85,6 +98,7 @@ class SpaceControllerTest {
 
     }
 
+    @WithMockUser(roles = USER)
     @Test
     void shouldReturnNewSpaceJson() throws Exception {
         // given:

@@ -4,9 +4,13 @@ import com.codecool.homee_backend.controller.dto.useractivity.DeviceActivityDto;
 import com.codecool.homee_backend.service.DeviceActivityService;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
 import java.util.List;
 import java.util.UUID;
 
+import static com.codecool.homee_backend.config.auth.SpringSecurityConfig.USER;
+
+@RolesAllowed(USER)
 @RestController
 @RequestMapping("/api/v1/activities")
 @CrossOrigin(origins = "http://localhost:3000")

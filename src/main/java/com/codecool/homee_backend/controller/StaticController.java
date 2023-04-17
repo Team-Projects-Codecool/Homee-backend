@@ -8,10 +8,14 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import static com.codecool.homee_backend.config.auth.SpringSecurityConfig.USER;
+
+@RolesAllowed(USER)
 @RestController
 @RequestMapping("/static")
 @CrossOrigin(origins = "http://localhost:3000")

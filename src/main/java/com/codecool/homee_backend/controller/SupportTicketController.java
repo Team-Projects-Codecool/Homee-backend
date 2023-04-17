@@ -5,9 +5,13 @@ import com.codecool.homee_backend.controller.dto.supportticket.SupportTicketDto;
 import com.codecool.homee_backend.service.SupportTicketService;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
 import java.util.List;
 import java.util.UUID;
 
+import static com.codecool.homee_backend.config.auth.SpringSecurityConfig.USER;
+
+@RolesAllowed(USER)
 @RestController
 @RequestMapping("/api/v1/support-tickets")
 public class SupportTicketController {

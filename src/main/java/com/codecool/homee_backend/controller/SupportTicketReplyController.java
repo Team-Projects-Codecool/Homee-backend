@@ -5,9 +5,13 @@ import com.codecool.homee_backend.controller.dto.supportticketreply.SupportTicke
 import com.codecool.homee_backend.service.SupportTicketReplyService;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
 import java.util.List;
 import java.util.UUID;
 
+import static com.codecool.homee_backend.config.auth.SpringSecurityConfig.ADMIN;
+
+@RolesAllowed(ADMIN)
 @RestController
 @RequestMapping("/api/v1/support-ticket-replies")
 public class SupportTicketReplyController {

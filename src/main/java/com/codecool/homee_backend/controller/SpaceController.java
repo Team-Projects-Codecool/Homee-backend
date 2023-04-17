@@ -7,9 +7,13 @@ import com.codecool.homee_backend.controller.dto.space.UpdatedSpaceDto;
 import com.codecool.homee_backend.service.SpaceService;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
 import java.util.List;
 import java.util.UUID;
 
+import static com.codecool.homee_backend.config.auth.SpringSecurityConfig.USER;
+
+@RolesAllowed(USER)
 @RestController
 @RequestMapping("/api/v1/spaces")
 @CrossOrigin(origins = "http://localhost:3000")
