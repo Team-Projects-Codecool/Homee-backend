@@ -22,7 +22,7 @@ class SpaceRepositoryTest {
         List<Space> actual = spaceRepository.findAll();
 
         // then:
-        Assertions.assertThat(actual.size()).isEqualTo(1);
+        Assertions.assertThat(actual.size()).isEqualTo(2);
     }
 
     @Test

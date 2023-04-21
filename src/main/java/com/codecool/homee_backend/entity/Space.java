@@ -17,6 +17,7 @@ public class Space {
     @Id
     @EqualsAndHashCode.Include
     private UUID id  = UUID.randomUUID();
+    private UUID ownerId;
     @Version
     private Integer version;
     private String name;
@@ -28,9 +29,10 @@ public class Space {
     @ManyToOne(fetch = FetchType.LAZY)
     private SpaceGroup spaceGroup;
 
-    public Space(String name, String about) {
+    public Space(String name, String about, UUID ownerId) {
         this.name = name;
         this.about = about;
+        this.ownerId = ownerId;
     }
 
     public void addHomeeUser(HomeeUser homeeUser) {

@@ -11,6 +11,7 @@ public class SpaceMapper {
     public SpaceDto mapSpaceEntityToDto(Space entity) {
         return new SpaceDto(
                 entity.getId(),
+                entity.getOwnerId(),
                 entity.getName(),
                 entity.getAbout()
         );
@@ -19,7 +20,8 @@ public class SpaceMapper {
     public Space mapSpaceDtoToEntity(NewSpaceDto dto) {
         return new Space(
                 dto.name(),
-                dto.about()
+                dto.about(),
+                dto.userId()
         );
     }
 

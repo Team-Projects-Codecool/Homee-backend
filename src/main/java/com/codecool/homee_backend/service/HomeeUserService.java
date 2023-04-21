@@ -66,7 +66,7 @@ public class HomeeUserService {
         authenticationManager.authenticate(authentication);
         HomeeUser homeeUser = homeeUserRepository.findByEmail(dto.username())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED));
-        return new AuthenticatedUserDto(homeeUser.getId(), jwtTokenService.generateToken(dto.username()));
+        return new AuthenticatedUserDto(homeeUser.getId(), homeeUser.getUsername(), jwtTokenService.generateToken(dto.username()));
     }
 
     public HomeeUserDto updateUser(UpdatedHomeeUserDto dto) {

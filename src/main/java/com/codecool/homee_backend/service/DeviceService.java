@@ -13,7 +13,7 @@ import com.codecool.homee_backend.repository.DeviceRepository;
 import com.codecool.homee_backend.repository.SpaceRepository;
 import com.codecool.homee_backend.service.exception.DeviceNotFoundException;
 import com.codecool.homee_backend.service.exception.SpaceNotFoundException;
-import com.codecool.homee_backend.utils.FileUploadUtil;
+import com.codecool.homee_backend.utils.UploadsManagerUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -124,7 +124,7 @@ public class DeviceService {
         String fileName = device.getId() + "-" + rand.nextInt(1000) + originalFileName;
         device.setImageName(fileName);
         deviceRepository.save(device);
-        FileUploadUtil.saveDevicePhoto(fileName, file);
+        UploadsManagerUtil.saveDevicePhoto(fileName, file);
     }
 
     private void addCreatedDeviceActivity(Device device) {

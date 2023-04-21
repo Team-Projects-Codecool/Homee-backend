@@ -9,12 +9,20 @@ import com.codecool.homee_backend.repository.DeviceRepository;
 import com.codecool.homee_backend.repository.DocumentRepository;
 import com.codecool.homee_backend.service.exception.DeviceNotFoundException;
 import com.codecool.homee_backend.service.exception.DocumentNotFoundException;
+import com.codecool.homee_backend.utils.UploadsManagerUtil;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
+@Slf4j
 public class DocumentService {
 
     private final DocumentRepository documentRepository;
@@ -27,14 +35,13 @@ public class DocumentService {
         this.documentMapper = documentMapper;
     }
 
-    public Document addNewDocument(NewDocumentDto newDocument, String filePath) {
+    public void addNewDocument(NewDocumentDto newDocument, String filePath) {
         Device device = deviceRepository.findById(newDocument.deviceId())
                 .orElseThrow(() -> new DeviceNotFoundException(newDocument.deviceId()));
         Document document = documentMapper.mapDocumentDtoToEntity(newDocument);
         document.setDevice(device);
         document.setPath(filePath);
-        device.addDocument(document);
-        return documentRepository.save(document);
+        documentRepository.save(document);
     }
 
     public DocumentDto getDocument(UUID id) {
@@ -55,8 +62,25 @@ public class DocumentService {
                 .orElseThrow(() -> new DocumentNotFoundException(id));
     }
 
-    public void deleteDocument(UUID id) {
+    public void deleteDocument(UUID id) throws IOException {
+        Document document = documentRepository.findById(id)
+                        .orElseThrow(() -> new DocumentNotFoundException(id));
+        UploadsManagerUtil.deleteDocumentFile(document);
         documentRepository.deleteById(id);
+    }
+
+    public HttpStatus saveDocument(String deviceId, String documentName, MultipartFile file) {
+        try {
+            String originalFileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
+            String fileName = UUID.randomUUID() + originalFileName;
+            UploadsManagerUtil.saveDocument(fileName, file);
+            NewDocumentDto dto = new NewDocumentDto(UUID.fromString(deviceId), documentName);
+            addNewDocument(dto, fileName);
+            return HttpStatus.OK;
+        } catch (Exception e) {
+            log.warn(e.getMessage());
+            return HttpStatus.INTERNAL_SERVER_ERROR;
+        }
     }
 
 }

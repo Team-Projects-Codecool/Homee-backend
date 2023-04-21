@@ -1,6 +1,7 @@
 package com.codecool.homee_backend.service;
 
 import com.codecool.homee_backend.controller.dto.space.NewSpaceDto;
+import com.codecool.homee_backend.controller.dto.space.ShareSpaceDto;
 import com.codecool.homee_backend.controller.dto.space.SpaceDto;
 import com.codecool.homee_backend.controller.dto.space.UpdatedSpaceDto;
 import com.codecool.homee_backend.entity.HomeeUser;
@@ -15,7 +16,9 @@ import com.codecool.homee_backend.service.exception.HomeeUserNotFoundException;
 import com.codecool.homee_backend.service.exception.SpaceGroupNotFoundException;
 import com.codecool.homee_backend.service.exception.SpaceNotFoundException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -65,6 +68,10 @@ public class SpaceService {
 
     public SpaceDto addNewSpace(NewSpaceDto dto) {
         Space space = spaceMapper.mapSpaceDtoToEntity(dto);
+        HomeeUser homeeUser = homeeUserRepository.findById(dto.userId())
+                .orElseThrow(() -> new HomeeUserNotFoundException(dto.userId()));
+        space.addHomeeUser(homeeUser);
+        homeeUser.addSpace(space);
         Space spaceDb = spaceRepository.save(space);
         return spaceMapper.mapSpaceEntityToDto(spaceDb);
     }
@@ -77,7 +84,26 @@ public class SpaceService {
 
         space.addHomeeUser(homeeUser);
         homeeUser.addSpace(space);
+        homeeUserRepository.save(homeeUser);
+    }
 
+    public void unassignedSpaceFromUser(UUID spaceId, UUID userId) {
+        Space space = spaceRepository.findById(spaceId)
+                .orElseThrow(() -> new SpaceNotFoundException(spaceId));
+        HomeeUser homeeUser = homeeUserRepository.findById(userId)
+                .orElseThrow(() -> new HomeeUserNotFoundException(userId));
+        space.getHomeeUsers().removeIf(u -> u == homeeUser);
+        homeeUser.getSpaces().removeIf(s -> s == space);
+        spaceRepository.save(space);
+    }
+
+    public void shareSpace(ShareSpaceDto dto) {
+        Space space = spaceRepository.findById(dto.spaceId())
+                .orElseThrow(() -> new SpaceNotFoundException(dto.spaceId()));
+        HomeeUser homeeUser = homeeUserRepository.findByEmail(dto.invitationEmail())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED));
+        space.addHomeeUser(homeeUser);
+        homeeUser.addSpace(space);
         homeeUserRepository.save(homeeUser);
     }
 
@@ -125,4 +151,5 @@ public class SpaceService {
     public Integer countSpacesForHomeeUserId(UUID userId) {
         return spaceRepository.findByHomeeUserId(userId).size();
     }
+
 }

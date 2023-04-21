@@ -2,9 +2,11 @@ package com.codecool.homee_backend.controller;
 
 
 import com.codecool.homee_backend.controller.dto.space.NewSpaceDto;
+import com.codecool.homee_backend.controller.dto.space.ShareSpaceDto;
 import com.codecool.homee_backend.controller.dto.space.SpaceDto;
 import com.codecool.homee_backend.controller.dto.space.UpdatedSpaceDto;
 import com.codecool.homee_backend.service.SpaceService;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
@@ -16,7 +18,6 @@ import static com.codecool.homee_backend.config.auth.SpringSecurityConfig.USER;
 @RolesAllowed(USER)
 @RestController
 @RequestMapping("/api/v1/spaces")
-@CrossOrigin(origins = "http://localhost:3000")
 public class SpaceController {
     private final SpaceService spaceService;
 
@@ -56,9 +57,20 @@ public class SpaceController {
         return spaceService.addNewSpace(newSpace);
     }
 
+    @PutMapping(params = "share")
+    public HttpStatus shareSpace(@RequestBody ShareSpaceDto dto) {
+        spaceService.shareSpace(dto);
+        return HttpStatus.OK;
+    }
+
     @PutMapping(params = {"spaceId", "userId"})
     public void assignSpaceToUser(@RequestParam UUID spaceId, @RequestParam UUID userId) {
         spaceService.assignSpaceToUser(spaceId, userId);
+    }
+
+    @DeleteMapping(params = {"spaceId", "userId"})
+    public void unassignedSpaceFromUser(@RequestParam UUID spaceId, @RequestParam UUID userId) {
+        spaceService.unassignedSpaceFromUser(spaceId, userId);
     }
 
     @PutMapping(params = {"spaceId", "groupId"})

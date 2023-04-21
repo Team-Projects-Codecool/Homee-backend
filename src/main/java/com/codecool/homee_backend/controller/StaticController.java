@@ -6,19 +6,17 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.security.RolesAllowed;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static com.codecool.homee_backend.config.auth.SpringSecurityConfig.USER;
-
-@RolesAllowed(USER)
 @RestController
 @RequestMapping("/static")
-@CrossOrigin(origins = "http://localhost:3000")
 public class StaticController {
 
     @GetMapping("/user-photos/{fileName:.+}")

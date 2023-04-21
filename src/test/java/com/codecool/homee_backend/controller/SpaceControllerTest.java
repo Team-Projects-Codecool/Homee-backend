@@ -98,8 +98,8 @@ class SpaceControllerTest {
 
     }
 
-    @WithMockUser(roles = USER)
     @Test
+    @WithMockUser(roles = USER)
     void shouldReturnNewSpaceJson() throws Exception {
         // given:
         NewSpaceDto newSpaceDto = new NewSpaceDto("testName", "testAbout");
@@ -110,18 +110,17 @@ class SpaceControllerTest {
 
 
         // when:
-        ResultActions reponse = mockMvc.perform(post("/api/v1/spaces")
+        ResultActions response = mockMvc.perform(post("/api/v1/spaces")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
                         {
-                         "name": "testName",
-                          "about": "testAbout"
+                         "name": "teste",
+                          "about": "test"
                         }
                                                 """));
         // then:
-        reponse.andExpect(status().isOk())
+        response.andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value(spaceDto.name()))
                 .andExpect(jsonPath("$.about").value(spaceDto.about()));
-
     }
 }

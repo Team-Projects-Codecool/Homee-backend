@@ -2,17 +2,19 @@ package com.codecool.homee_backend.controller;
 
 
 import com.codecool.homee_backend.controller.dto.document.DocumentDto;
-import com.codecool.homee_backend.controller.dto.document.NewDocumentDto;
 import com.codecool.homee_backend.entity.Document;
 import com.codecool.homee_backend.service.DocumentService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.security.RolesAllowed;
-import java.io.File;
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.nio.file.Files;
+import java.net.MalformedURLException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -22,6 +24,7 @@ import static com.codecool.homee_backend.config.auth.SpringSecurityConfig.USER;
 
 @RolesAllowed(USER)
 @RestController
+@Slf4j
 @RequestMapping("/api/v1/documents")
 public class DocumentController {
 
@@ -37,61 +40,47 @@ public class DocumentController {
     }
 
     @GetMapping(params = "deviceId")
-    public List<DocumentDto> getDocumentsDataForDevice(UUID id) {
-        return documentService.getDocumentsForDevice(id);
+    public List<DocumentDto> getDocumentsDataForDevice(@RequestParam UUID deviceId) {
+        return documentService.getDocumentsForDevice(deviceId);
     }
 
     @GetMapping(value = "/{id}", params = "download")
-    public ResponseEntity<byte[]> downloadDocument(@PathVariable UUID id, @RequestParam Boolean download) {
-        if (download) {
-            Document document = documentService.getDownloadDocumentData(id);
+    public ResponseEntity<Resource> downloadDocument(@PathVariable UUID id, HttpServletRequest request) {
+        Document document = documentService.getDownloadDocumentData(id);
+        try {
+            Path path = Paths.get("src", "main", "user-uploads", document.getPath());
+            Resource resource = new UrlResource(path.toUri());
+            String contentType = null;
             try {
-                Path path = Paths.get(document.getPath());
-                byte[] fileContent = Files.readAllBytes(path);
-
-                HttpHeaders headers = new HttpHeaders();
-                headers.setContentType(MediaType.APPLICATION_PDF);
-                headers.setContentDisposition(ContentDisposition.builder("attachment")
-                        .filename(path.getFileName().toString())
-                        .build());
-                headers.setContentLength(fileContent.length);
-
-                return new ResponseEntity<>(fileContent, headers, HttpStatus.OK);
-
-            } catch (IOException e) {
-                return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+                contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
+            } catch (IOException ex) {
+                log.info("Could not determine file type.");
             }
+            if(contentType == null) {
+                contentType = "application/octet-stream";
+            }
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.parseMediaType(contentType));
+            headers.setContentDisposition(ContentDisposition.builder("attachment")
+                    .filename(document.getPath())
+                    .build());
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .body(resource);
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
         }
-        return null;
     }
 
-    @DeleteMapping("/{id}")
-    public void deleteDocument(@PathVariable UUID id) {
-        documentService.deleteDocument(id);
-    }
-
-    @PostMapping
-    public ResponseEntity<Document> uploadDocument(@RequestBody NewDocumentDto newDocument, @RequestParam("file") MultipartFile file) {
-       try {
-           String filePath = saveFile(file, newDocument);
-           Document document = documentService.addNewDocument(newDocument, filePath);
-           return new ResponseEntity<>(document, HttpStatus.OK);
-       } catch (Exception e) {
-           return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-       }
-    }
-
-    private String saveFile(MultipartFile file, NewDocumentDto newDocument) throws IOException {
-        String fileName = UUID.randomUUID() + ".pdf";
-        System.getProperty("java.home");
-        //String.join("/", "uploads", "directory");
-        String filePath = "/uploads/" + newDocument.deviceId() + "/" + fileName;
-        File directory = new File("/uploads/" + newDocument.deviceId());
-        if (!directory.exists()) {
-            directory.mkdirs();
+        @DeleteMapping("/{id}")
+        public void deleteDocument (@PathVariable UUID id) throws IOException {
+            documentService.deleteDocument(id);
         }
-        Path path = Paths.get(filePath);
-        Files.write(path, file.getBytes());
-        return filePath;
-    }
+
+        @PostMapping()
+        public HttpStatus uploadDocument (@RequestParam String deviceId, @RequestParam String
+        documentName, @RequestParam("file") MultipartFile file){
+            return documentService.saveDocument(deviceId, documentName, file);
+        }
+
 }

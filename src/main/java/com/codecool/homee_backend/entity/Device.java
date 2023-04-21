@@ -14,7 +14,6 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString(exclude = "space")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Device {
     @Id

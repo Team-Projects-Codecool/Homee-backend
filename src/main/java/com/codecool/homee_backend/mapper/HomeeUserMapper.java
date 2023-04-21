@@ -25,6 +25,7 @@ public class HomeeUserMapper {
     public AuthenticatedUserDto mapHomeeUserEntityToAuthenticatedUserDto(HomeeUser entity, String token) {
         return new AuthenticatedUserDto(
                 entity.getId(),
+                entity.getUsername(),
                 token
         );
     }
