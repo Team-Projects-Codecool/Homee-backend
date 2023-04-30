@@ -36,7 +36,8 @@ create table space
     version        integer,
     space_group_id uuid
         constraint fk7iev72073qcn6o10mimjdiimb
-            references space_group
+            references space_group,
+    owner_id    uuid
 );
 
 create table device

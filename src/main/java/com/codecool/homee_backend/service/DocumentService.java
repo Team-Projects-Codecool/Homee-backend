@@ -78,7 +78,6 @@ public class DocumentService {
             addNewDocument(dto, fileName);
             return HttpStatus.OK;
         } catch (Exception e) {
-            log.warn(e.getMessage());
             return HttpStatus.INTERNAL_SERVER_ERROR;
         }
     }

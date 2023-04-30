@@ -11,12 +11,15 @@ public class NoteMapper {
     public NoteDto mapNoteEntityToDto(Note entity) {
         return new NoteDto(
                 entity.getId(),
-                entity.getDescription()
+                entity.getTitle(),
+                entity.getDescription(),
+                entity.getCreationTime()
         );
     }
 
     public Note mapNoteDtoToEntity(NewNoteDto dto) {
         return new Note(
+                dto.title(),
                 dto.description()
         );
     }

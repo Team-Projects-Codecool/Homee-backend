@@ -32,7 +32,7 @@ public class DeviceActivityService {
                 .toList();
     }
 
-    public List<DeviceActivityDto> getUserDevicesActivity(UUID userId) {
+    public List<DeviceActivityDto>  getUserDevicesActivity(UUID userId) {
         HomeeUser homeeUser = homeeUserRepository.findById(userId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         return homeeUser.getSpaces().stream()

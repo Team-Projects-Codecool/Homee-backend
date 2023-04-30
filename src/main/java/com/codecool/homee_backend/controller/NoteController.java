@@ -6,13 +6,10 @@ import com.codecool.homee_backend.controller.dto.note.NoteDto;
 import com.codecool.homee_backend.controller.dto.note.UpdatedNoteDto;
 import com.codecool.homee_backend.service.NoteService;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import javax.annotation.security.RolesAllowed;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 import static com.codecool.homee_backend.config.auth.SpringSecurityConfig.USER;
@@ -45,12 +42,9 @@ public class NoteController {
         noteService.assignNoteToDevice(noteId, deviceId);
     }
 
-    @PutMapping("/{noteId}")
-    public NoteDto updateNote(@PathVariable UUID noteId, @RequestBody UpdatedNoteDto updatedNote) {
-        if (Objects.equals(updatedNote.id().toString(), noteId.toString())) {
-            return noteService.updateNote(updatedNote);
-        }
-        throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+    @PutMapping
+    public NoteDto updateNote(@RequestBody UpdatedNoteDto updatedNote) {
+        return noteService.updateNote(updatedNote);
     }
 
     @DeleteMapping("/{noteId}")

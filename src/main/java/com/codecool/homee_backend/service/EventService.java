@@ -7,6 +7,7 @@ import com.codecool.homee_backend.entity.Device;
 import com.codecool.homee_backend.entity.DeviceActivity;
 import com.codecool.homee_backend.entity.Event;
 import com.codecool.homee_backend.entity.type.ActivityType;
+import com.codecool.homee_backend.entity.type.EventType;
 import com.codecool.homee_backend.mapper.EventMapper;
 import com.codecool.homee_backend.repository.DeviceRepository;
 import com.codecool.homee_backend.repository.EventRepository;
@@ -14,6 +15,7 @@ import com.codecool.homee_backend.service.exception.DeviceNotFoundException;
 import com.codecool.homee_backend.service.exception.EventNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,6 +33,13 @@ public class EventService {
     }
 
 
+    public List<EventDto> getEventsForDate(LocalDate date) {
+        return eventRepository.getAllByNotificationTime(date).stream()
+                .map(eventMapper::mapEventEntityToDto)
+                .toList();
+    }
+
+
     public EventDto getSingleEvent(UUID id) {
         return eventRepository.findById(id)
                 .map(eventMapper::mapEventEntityToDto)
@@ -45,6 +54,10 @@ public class EventService {
 
     public void deleteEvent(UUID id) {
         eventRepository.deleteById(id);
+    }
+
+    public List<EventType> getTypes() {
+        return List.of(EventType.values());
     }
 
     public EventDto updateEvent(UpdatedEvent updatedEvent) {

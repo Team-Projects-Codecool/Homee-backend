@@ -14,6 +14,7 @@ public class EventMapper {
                 entity.getName(),
                 entity.getEventType(),
                 entity.getNotification(),
+                entity.getNotificationTime(),
                 entity.getScheduledAt()
         );
     }
@@ -23,6 +24,7 @@ public class EventMapper {
                 dto.name(),
                 dto.eventType(),
                 dto.notification(),
+                dto.notificationTime(),
                 dto.scheduledAt()
         );
     }

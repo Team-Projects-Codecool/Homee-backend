@@ -56,7 +56,7 @@ public class DocumentController {
             } catch (IOException ex) {
                 log.info("Could not determine file type.");
             }
-            if(contentType == null) {
+            if (contentType == null) {
                 contentType = "application/octet-stream";
             }
             HttpHeaders headers = new HttpHeaders();
@@ -72,15 +72,17 @@ public class DocumentController {
         }
     }
 
-        @DeleteMapping("/{id}")
-        public void deleteDocument (@PathVariable UUID id) throws IOException {
-            documentService.deleteDocument(id);
-        }
 
-        @PostMapping()
-        public HttpStatus uploadDocument (@RequestParam String deviceId, @RequestParam String
-        documentName, @RequestParam("file") MultipartFile file){
-            return documentService.saveDocument(deviceId, documentName, file);
-        }
+    @DeleteMapping("/{id}")
+    public void deleteDocument(@PathVariable UUID id) throws IOException {
+        documentService.deleteDocument(id);
+    }
+
+
+    @PostMapping()
+    public HttpStatus uploadDocument(@RequestParam String deviceId, @RequestParam String
+            documentName, @RequestParam("file") MultipartFile file) {
+        return documentService.saveDocument(deviceId, documentName, file);
+    }
 
 }

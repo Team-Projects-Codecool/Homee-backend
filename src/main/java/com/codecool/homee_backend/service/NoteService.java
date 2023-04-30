@@ -35,7 +35,7 @@ public class NoteService {
     }
 
     public List<NoteDto> getNotesForDevice(UUID deviceId) {
-        return noteRepository.findAllByDeviceId(deviceId).stream()
+        return noteRepository.findAllByDeviceIdOrderByCreationTime(deviceId).stream()
                 .map(noteMapper::mapNoteEntityToDto)
                 .toList();
     }
@@ -75,6 +75,7 @@ public class NoteService {
     }
 
     private void assignUpdatedNoteData(UpdatedNoteDto updatedNote, Note entity) {
+        entity.setTitle(updatedNote.title());
         entity.setDescription(updatedNote.description());
     }
 

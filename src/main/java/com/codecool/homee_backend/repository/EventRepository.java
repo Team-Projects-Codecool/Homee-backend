@@ -4,6 +4,7 @@ import com.codecool.homee_backend.entity.Event;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -11,5 +12,7 @@ import java.util.UUID;
 public interface EventRepository extends JpaRepository<Event, UUID> {
 
     List<Event> getEventsByDeviceId(UUID id);
+
+    List<Event> getAllByNotificationTime(LocalDate date);
 
 }

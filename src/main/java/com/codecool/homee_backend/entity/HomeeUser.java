@@ -39,6 +39,8 @@ public class HomeeUser {
     private String about;
     @OneToMany(mappedBy = "homeeUser", cascade = {CascadeType.PERSIST, CascadeType.MERGE })
     private List<SpaceGroup> spaceGroups = new ArrayList<>();
+    @OneToMany(mappedBy = "homeeUser", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private List<Notification> notifications = new ArrayList<>();
     @ManyToMany
     @JoinTable(
             name = "homee_user_space",
@@ -67,6 +69,8 @@ public class HomeeUser {
     public void addGroup(SpaceGroup spaceGroup) {
         spaceGroups.add(spaceGroup);
     }
+
+    public void addNotification(Notification notification) { notifications.add(notification); }
 
     public void clearAllUserSpaces() {
         spaces.clear();

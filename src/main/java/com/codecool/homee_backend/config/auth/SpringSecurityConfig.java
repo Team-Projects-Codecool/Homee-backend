@@ -6,6 +6,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -31,6 +32,7 @@ import java.util.List;
 @Configuration
 @EnableMethodSecurity(jsr250Enabled = true)
 @EnableConfigurationProperties(AuthConfigProperties.class)
+@EnableScheduling
 public class SpringSecurityConfig {
 
     public static final String ADMIN = "ADMIN";

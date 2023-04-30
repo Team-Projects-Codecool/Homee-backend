@@ -1,5 +1,6 @@
 package com.codecool.homee_backend.controller;
 
+import com.codecool.homee_backend.config.auth.SpringSecurityConfig;
 import com.codecool.homee_backend.controller.dto.space.NewSpaceDto;
 import com.codecool.homee_backend.controller.dto.space.SpaceDto;
 import com.codecool.homee_backend.repository.HomeeUserRepository;
@@ -13,6 +14,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -28,6 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = SpaceController.class)
+@Import(SpringSecurityConfig.class)
 class SpaceControllerTest {
 
     @Autowired
@@ -80,7 +83,6 @@ class SpaceControllerTest {
 
 
     }
-
     @WithMockUser(roles = USER)
     @Test
     void shouldReturn404WhenSpaceNotFound() throws Exception {
@@ -97,29 +99,28 @@ class SpaceControllerTest {
         ;
 
     }
-
-    @Test
     @WithMockUser(roles = USER)
+    @Test
     void shouldReturnNewSpaceJson() throws Exception {
         // given:
-        NewSpaceDto newSpaceDto = new NewSpaceDto("testName", "testAbout");
+        NewSpaceDto newSpaceDto = new NewSpaceDto("test", "test", UUID.fromString("9af48a4c-bf0b-4285-bb8f-afcff90f4c64"));
 
-        SpaceDto spaceDto = new SpaceDto(UUID.randomUUID(), "testName", "testAbout");
+        SpaceDto spaceDto = new SpaceDto(UUID.fromString("9af48a4c-bf0b-4285-bb8f-afcff90f4c64"), newSpaceDto.userId(), "test", "test");
 
         Mockito.when(spaceService.addNewSpace(newSpaceDto)).thenReturn(spaceDto);
-
 
         // when:
         ResultActions response = mockMvc.perform(post("/api/v1/spaces")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
                         {
-                         "name": "teste",
-                          "about": "test"
+                         "name": "test",
+                          "about": "test",
+                          "userId": "9af48a4c-bf0b-4285-bb8f-afcff90f4c64"
                         }
                                                 """));
         // then:
-        response.andExpect(status().isOk())
+         response.andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value(spaceDto.name()))
                 .andExpect(jsonPath("$.about").value(spaceDto.about()));
     }

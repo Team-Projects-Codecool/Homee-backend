@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 @RestControllerAdvice
 public class ErrorControllerAdvice {
@@ -22,6 +23,12 @@ public class ErrorControllerAdvice {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     protected ErrorResponse handleNoResources(ResourcesNotFoundException e) {
         return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    protected ErrorResponse handleMaxUploadSizeExceeded(MaxUploadSizeExceededException e) {
+        return new ErrorResponse("File size exceeded");
     }
 
 
